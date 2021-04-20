@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<link rel="stylesheet" href="main.css" />
+		<script src="../../lib/jquery/jquery-3.6.0.min.js"></script>
+		<script src="../../lib/processing/processing.min.js"></script>
+		<script src="data.js"></script>
+		<script src="main.js"></script>
+	</head>
+	<body oncontextmenu="return false;">
+		<canvas id="cvs">
+		</canvas>
+		<div id="controls">
+			<div id="ctrl-padding">
+				<input type="checkbox" id="AngleTogg">Display Angles<br />
+				<input type="checkbox" id="AngleToggSel">    ...on Unselected Atoms<br />
+				<input type="checkbox" id="CircleTogg">Display Actual Atomic Radius<br />
+				<input type="checkbox" id="SimpleTogg">Simple Rendering Mode<br />
+				<br /><b><i>USAGE INSTRUCTIONS</i></b><div id="instructions">
+					<b>Basic Operations</b><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;Type an atomic symbol or name (e.g. H or Hydrogen) and press ENTER to create an atom. Click on an atom to select or grab it; click on the background to unselect. Click on an unselected atom with another atom selected to form a single bond; consecutive left clicks will increase bond order, while right clicks will decrease bond order or destroy bonds. Press DELETE to delete the currently selected atom.
+					<br />
+					<b>Movement and Selection</b><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;Use the scroll wheel to zoom in and out; the window will pan towards the cursor location, so zoom can be used to pan as well. Hold the middle mouse button to rotate the system in 3D around the selected atom, or around the cursor if no atom is selected. Hold SHIFT to display formal charges, rotate around the center of the selected molecule (WIP), delete entire molecules, and form ionic bonds with the selected atom as the cation.
+					<br />
+					<b>Advanced Bonding</b><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;Hold SHIFT and press Up or Down to change the charge of the selected atom. Press Left and Right to select bonds with the primary pointer; hold CTRL and click bonds and atoms to (de)select them with the secondary pointer. Press TAB to select the atom at the other end of the currently selected bond. Press + (SHIFT and =) to equally distribute all secondary-selected bonds that belong to the current primary-selected atom; press - to reverse this process (new bond orders will be chosen randomly).
+					<b>Advanced Creation</b><br />
+					&nbsp;&nbsp;&nbsp;&nbsp;Multiple atoms created in the same action will be automatically single-bonded together around the first atom, including numbers for multiple atoms of the same type (e.g. 'CH4'); use a space to change focus to the last atom entered, or a space followed by a lowercase e to increase bond order. Enter 'Close' or 'Return' to return to the selected atom, 'Close' forming a single bond (e.g. CHC e HC HC e HC HC e HClose will form a benzene ring). Enter ' cap' after an element to place it on every atom that does not fulfill the octet rule or its variants (e.g. 'H cap'). Enter ' clr' after an element to delete every instance of that element (e.g. 'H clr').
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

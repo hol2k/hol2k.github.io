@@ -1,0 +1,54 @@
+/*Document style, color scheme, etc.*/
+body {
+	background-color: #eef;
+	color: #000;
+	font-family: calibri, sans-serif;
+}
+
+:root {
+	font-size: 0.8em;
+}
+
+.h1 {
+	color: #fff;
+	font-size: 200%;
+	background-color: #66a;
+}
+
+.h2 {
+	color: #fff;
+	font-size: 150%;
+	background-color: #77b;
+	height: auto;
+}
+
+.text {
+	color: #000;
+	background-color: #cce;
+}
+
+.text-sub {
+	filter: opacity(50%);
+	font-size: 75%;
+}
+
+.h1 .a, .h2 .a {
+	color: #ddf;
+}
+
+.h1 .a:visited, .h2 .a:visited {
+	color: #ede;
+}
+
+.fill-bg {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	z-index: 1;
+}
