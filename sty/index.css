@@ -73,6 +73,7 @@ ul {
 	position: relative;
 	height: 100%;
 	width: 100%;
+	overflow-y: auto;
 }
 
 /*Title block*/
@@ -87,6 +88,7 @@ ul {
 	text-indent: 0.75rem;
 	border: none;
 	flex: 0 1 auto;
+	overflow-y: visible;
 }
 
 a.grid-item-title::before {
@@ -202,6 +204,11 @@ a.grid-item-title:hover::before {
 	align-self: start;
 	top: 0;
 	z-index: 1;
+}
+
+.grid-header .grid-inner {
+	overflow-y: visible;
+	white-space: nowrap;
 }
 
 @keyframes resize-correction {
