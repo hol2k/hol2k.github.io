@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Calibri, sans-serif;
+}
+
+.filter-outline-white {
+    filter: drop-shadow(1px 0 0px white)
+    drop-shadow(-1px 0 0px white)
+    drop-shadow(0 1px 0px white)
+    drop-shadow(0 -1px 0px white);
+}
+
+.filter-outline-black {
+    filter: drop-shadow(1px 0 0px black)
+    drop-shadow(-1px 0 0px black)
+    drop-shadow(0 1px 0px black)
+    drop-shadow(0 -1px 0px black);
+}
+
+.text-outline-white {
+    text-shadow: 1px 0 1px #fff, -1px 0 1px #fff, 0 1px 0 #fff, 0 -1px 0 #fff,
+        1px 1px 1px #fff, -1px 1px 1px #fff, 1px -1px 0 #fff, -1px -1px 0 #fff;
+}
+
+.text-outline-black {
+    text-shadow: 1px 0 1px #000, -1px 0 1px #000, 0 1px 0 #000, 0 -1px 0 #000,
+        1px 1px 1px #000, -1px 1px 1px #000, 1px -1px 0 #000, -1px -1px 0 #000;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Counter</title>
+    <style>
+        canvas {
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="counter-indicator" width="256" height="256"></canvas>
+    <script>
+        let canvas = document.getElementById('counter-indicator');
+        let ctx = canvas.getContext('2d');
+        let prevTimestamp = null;
+        let counterStart = 30;
+        let counter = counterStart;
+        let counterRadFollower = Math.PI * 2;
+
+        let pulses = [];
+
+        function renderTick() {
+            //calculate delta time
+            let now = new Date();
+            let currTimestamp = now.getTime();
+            let dt;
+            if(prevTimestamp === null) {
+                dt = 0;
+            } else {
+                dt = (currTimestamp - prevTimestamp) / 1000;
+            }
+            prevTimestamp = currTimestamp;
+
+            //clear old render frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            //pulses
+            for(let pulse of pulses) {
+                let frac = pulse.stopwatch / pulse.duration;
+                let pulseFrac = (counterStart - pulse.level) / counterStart;
+                let adjustedSize = frac * (canvas.height / 12) * (0.25 + 0.75 * pulseFrac + 0.125 * (pulse.strength - 1));
+                let pulseRad = pulse.level/counterStart * Math.PI * 2;
+
+                ctx.fillStyle = `rgba(255, 0, 0, ${(1 - frac) * 1 * pulseFrac})`;
+                ctx.beginPath();
+                ctx.arc(
+                    canvas.width/2, canvas.height/2,
+                    canvas.height/3,
+                    0, pulseRad);
+                ctx.arc(
+                    canvas.width/2, canvas.height/2,
+                    canvas.height/3 + adjustedSize,
+                    pulseRad, 0, true);
+                ctx.fill();
+                pulse.stopwatch += dt;
+            }
+            pulses = pulses.filter(pulse => pulse.stopwatch < pulse.duration);
+
+            //background circle
+            ctx.fillStyle = '#722';
+            ctx.beginPath();
+            ctx.arc(
+                canvas.width/2, canvas.height/2,
+                canvas.height/3,
+                0, Math.PI*2);
+            ctx.fill();
+
+            //border circle
+            let counterRad = counter/counterStart * Math.PI * 2;
+            counterRadFollower += (counterRad - counterRadFollower) * 10 * dt;
+
+            ctx.fillStyle = '#f00';
+            ctx.beginPath();
+            ctx.arc(
+                canvas.width/2, canvas.height/2,
+                canvas.height/3,
+                0, counterRadFollower);
+            ctx.arc(
+                canvas.width/2, canvas.height/2,
+                canvas.height/3 * 0.9,
+                counterRadFollower, 0, true);
+            ctx.fill();
+
+            //text
+            ctx.fillStyle = '#fcc';
+            ctx.font = `${canvas.height/2.5}px monospace`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            let text = counter;
+            if(counter == counterStart) {
+                text = 'Start';
+                ctx.font = `${canvas.height/6}px monospace`;
+            } else if(counter == 0) {
+                text = 'End';
+                ctx.font = `${canvas.height/6}px monospace`;
+            }
+            ctx.fillText(text, canvas.width/2, canvas.height/2);
+
+            //loop logic
+            //stop rendering once all activity is stopped
+            if(counter > 0 || pulses.length > 0 || Math.abs(counterRadFollower - counterRad) >= 0.001) {
+                requestAnimationFrame(renderTick);
+            } else {
+                counterRadFollower = counterRad;
+                console.log("Render loop halted");
+            }
+        }
+
+        requestAnimationFrame(renderTick);
+
+        function counterTick() {
+            //counter handling
+            counter--;
+
+            //pulses
+            let totalPulses = 1;
+            if(counter <= Math.ceil(counterStart / 2)) totalPulses = 2;
+            if(counter <= Math.ceil(counterStart / 4)) totalPulses = 3;
+            if(counter <= Math.ceil(counterStart / 8)) totalPulses = 4;
+            if(counter <= 1) totalPulses = 5;
+            for(let i = 0; i < totalPulses; i++) {
+                setTimeout(emitPulse, 1000 * i/totalPulses, totalPulses);
+            }
+
+            //loop logic
+            if(counter <= 0) {
+                clearInterval(ctHandle);
+                console.log("Counter loop halted");
+            }
+        }
+        function emitPulse(strength) {
+            pulses.push({level: counter, strength: strength, stopwatch: 0, duration: 0.5});
+        }
+
+        let ctHandle = setInterval(counterTick, 1000);
+    </script>
+</body>
+</html>

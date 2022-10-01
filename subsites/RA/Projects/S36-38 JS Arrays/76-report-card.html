@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Report Card</title>
+    <style>
+
+    </style>
+    <!-- MIT License
+        Copyright 2022 Karl Holzer
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    -->
+    <!-- References (will be tagged with "REF[#]" comments in some example points of use):
+        [1] https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+        [2] https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
+        [3] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+        [4] https://stackoverflow.com/questions/21422337/append-element-as-sibling-after-element
+        [5] https://stackoverflow.com/questions/49956141/how-to-iterate-on-htmlcollection
+        [6] https://developer.mozilla.org/en-US/docs/Web/API/Node/parentElement
+        [7] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+        [8] https://stackoverflow.com/questions/8674618/adding-options-to-select-with-javascript
+        [9] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+    -->
+    <!-- TODO:
+        - Add style to the webpage.
+        - Use an <input type="submit">, or remove 'type="button"', from the data entry form's submit button; handle form submission and reset behavior instead of implementing this completely manually (may possibly confuse some devices e.g. screen readers?).
+        - Make ReportCard.subjects private (# before variable name) so only addSubject and removeSubject may be used to modify the array.
+            - Will also need a getSubject and getSubjectCount method.
+        - Make some form elements required: name, at least 1 subject, name and valid score for every subject.
+            - If input is invalid, display a helpful error within the form.
+            - Possibly animate form or submit button shaking briefly?
+        - Implement editing and removal of existing report cards.
+    -->
+</head>
+<body>
+    <section>
+        <article id="arti-data-entry">
+            <button id="btn-beginentry" onclick="beginDataEntry()">Add New Report Card...</button>
+            <form id="data-entry-target" style="display:none"><fieldset disabled>
+                <table>
+                    <tbody id="dataentry-table">
+                        <tr>
+                            <th>Name:</th>
+                            <td colspan=3><input id="name-inp"></td>
+                        </tr>
+                        <tr id="dataentry-last-row">
+                            <td colspan=3>
+                                <button type="button" onclick="addSubject()">Add Subject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="btn-endentry" onclick="finishDataEntry()">Submit</button>
+            </fieldset></form>
+        </article>
+        <article id="arti-list">
+            <select id="arti-list-select">
+
+            </select>
+            <button onclick="displayData()">Load Report Card</button>
+        </article>
+        <article id="arti-display">
+            <table id="arti-display-content">
+
+            </table>
+        </article>
+    </section>
+
+    <!-- REF[1]: Contains HTML content that will not display in the page nor affect it in ANY other way.
+        For JS reference, as a JS script can easily see this content, duplicate it, and insert this copy elsewhere in the page where it will become visible.
+    -->
+    <template id="data-entry-subject-row"> 
+        <tr class='data-entry-subject-row'>
+            <th colspan=2>
+                Subject:
+            </th>
+            <td>
+                <input class="subname-inp">
+            </td>
+            <td>
+                <input class="subscore-inp" type="number" min=0 max=100>
+            </td>
+            <td>
+                <!-- REF[2], REF[6]: entirely remove this element's grandparent (2 levels up) from the HTML document, which points to the table row in this case (as 'this' is the button). -->
+                <button type="button" onclick="this.parentNode.parentNode.remove()">Remove</button>
+            </td>
+        </tr>
+    </template>
+
+    <script>
+        // REF[9]: Similar to a constructor function; this defines a way to generate an object with the "new" keyword, but with layout and terminology more similar to other object-oriented languages.
+        //Stores information related to a report card: a student name and a list of subject/score pairs.
+        class ReportCard {
+            //This is the code that would normally be executed by a constructor function, e.g. function ReportCard() {...}
+            constructor(name) {
+                this.name = name;
+                this.subjects = [];
+            }
+
+            //These functions are added to the object; ' = function' may be provided but isn't required (may have different behavior?)
+            addSubject(name, score) { 
+                this.subjects.push([name, score]);
+            }
+
+            // REF[3]: Remove an element from the array at any index
+            //Unused, just provides symmetry with addSubject
+            removeSubject(index) {
+                this.subjects.splice(index, 1);
+            }
+        }
+
+        //Stores all ReportCard objects created by the data entry form.
+        let allReportCards = [];
+
+        //Add a new blank subject row to the data entry form.
+        //Called via the 'add subject' button in the data entry form.
+        function addSubject() {
+            let lastRow = document.getElementById('dataentry-last-row');
+            let toAdd = document.getElementById('data-entry-subject-row').content.cloneNode(true);
+            // REF[4]: inserts the element toAdd as a child of #dataentry-table, such that it is placed just before #dataentry-last-row
+            document.getElementById('dataentry-table').insertBefore(toAdd, lastRow);
+        }
+
+        //Display the data entry form and disable the 'add new report card' button.
+        //Called via the 'add new report card' button.
+        function beginDataEntry() {
+            document.getElementById('btn-beginentry').disabled = true;
+            let det = document.getElementById('data-entry-target');
+            det.querySelector('fieldset').disabled = false;
+            det.style.display = 'block';
+        }
+
+        //Move the contents of the data entry form into a new ReportCard, store it, and list it on the page. Then, reset and hide the form, and re-enable the 'add new report card' button.
+        //Called via the 'submit' button in the data entry form.
+        function finishDataEntry() { 
+            //build report card object
+            let card = new ReportCard(document.getElementById('name-inp').value);
+
+            // REF[5]: querySelectorAll returns an HTMLCollection which cannot normally be used like an array, must wrap it in an array first
+            let subjectRows = Array.from(document.querySelectorAll('.data-entry-subject-row'));
+            for(let i = 0; i < subjectRows.length; i++) {
+                let subjRow = subjectRows[i];
+                let rowName = subjRow.querySelector('.subname-inp');
+                let rowScore = subjRow.querySelector('.subscore-inp');
+                card.addSubject(rowName.value, Number(rowScore.value));
+            }
+
+            //add report card to list
+            let newIndex = allReportCards.length;
+            allReportCards[newIndex] = card;
+            
+            // REF[8]: Insert report card into select as a new option.
+            let newOpt = document.createElement('option');
+            newOpt.value = newIndex;
+            newOpt.innerText = card.name;
+            document.getElementById('arti-list-select').appendChild(newOpt);
+
+            //cleanup/reset form
+            for(let i = 0; i < subjectRows.length; i++) {
+                subjectRows[i].remove();
+            }
+
+            document.getElementById('name-inp').value = '';
+
+            var det = document.getElementById('data-entry-target');
+            det.querySelector('fieldset').disabled = true;
+            det.style.display = 'none';
+            document.getElementById('btn-beginentry').disabled = false;
+        }
+
+        //Retrieve the contents of the selected report card in the relevant <select>, and display it as a table on the page.
+        function displayData() {
+            let currIndex = Number(document.getElementById('arti-list-select').value);
+
+            //invalid selection or nothing to display
+            if(allReportCards.length == 0 || currIndex >= allReportCards.length) {
+                return;
+            }
+            
+            let card = allReportCards[currIndex];
+
+            let table = document.getElementById('arti-display-content');
+
+            //generate the body of the table; insertion point is a pre-existing table element
+            let dispv = '<tbody>';
+            dispv += `<tr><th>Name:</th><td>${card.name}</td></tr>`;
+            dispv += `<tr><th colspan=2>Subjects:</th></tr>`;
+            let totalScore = 0;
+            for(let i = 0; i < card.subjects.length; i++) {
+                // REF[7]: "Destructuring Assignment". Roughly equivalent to "let subname = card.subjects[i][0]; let subscore = card.subjects[i][1];".
+                let [subname, subscore] = card.subjects[i];
+                totalScore += subscore;
+                dispv += `<tr><td>${subname}:</td><td>${subscore.toFixed(1)}%</td></tr>`;
+            }
+            dispv += `<tr><th>TOTAL:</th><td>${totalScore.toFixed(0)}</td></tr>`;
+            dispv += `<tr><th>AVERAGE:</th><td>${(totalScore/card.subjects.length).toFixed(0)}</td></tr>`;
+            dispv += '</tbody>';
+
+            table.innerHTML = dispv;
+        }
+    </script>
+</body>
+</html>

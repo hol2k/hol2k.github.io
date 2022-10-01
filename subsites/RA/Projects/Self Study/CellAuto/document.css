@@ -1,0 +1,73 @@
+/* General document style */
+:root {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    margin-bottom: 2em;
+    text-align: center;
+    background-color: #111611;
+    color: #ded;
+    font-family: 'Segoe UI', serif;
+    overflow-x: hidden; /*occurs during some animations*/
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+
+input, button, select, option {
+    background-color: #343;
+    color: #ded;
+    width: 100%;
+    padding: 2px;
+    margin: 0;
+    box-sizing: border-box;
+    vertical-align: top;
+    border-radius: 0.5em;
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+
+:not(.lightmode) button:hover {
+    background-color: #565;
+    text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
+}
+
+button:active {
+    padding: 4px 0 0 4px;
+}
+
+h1 {
+    margin: 0;
+    margin-bottom: 0.125em;
+}
+
+h2 {
+    margin: 0;
+    margin-top: 0.25em;
+    background: linear-gradient(to right, #0f00, #0f03, #0f00);
+    padding: 2px;
+}
+
+p, ul {
+    margin: 0.5em;
+}
+
+article {
+    margin: 0.5em auto;
+    width: 90vw;
+}
+
+.svg-normal {
+    fill: #fff;
+    
+    transition: fill 1s;
+}
+
+.svg-highlight {
+    fill: #f00;
+    
+    transition: fill 1s;
+}
+
+#status {
+    white-space: pre-wrap;
+}

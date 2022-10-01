@@ -1,0 +1,164 @@
+/* Navbar */
+
+nav {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    background-color: #040;
+    padding: 2px;
+    box-shadow: 0 0 2px 4px #141;
+    z-index: 1; /*prevents SVG icons from drawing in front*/
+
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+
+nav a {
+    display: inline-block;
+    color: #7af;
+    margin: 0 0.5em;
+    width: 3em;
+    font-size: 120%;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+
+.anchor {
+    display: block;
+    position: relative;
+    top: -1.5em;
+    visibility: hidden;
+}
+
+
+/* Display section */
+#canvas-wrapper {
+    max-width: 90vw;
+    max-height: 65vh;
+    margin: 0.5em auto;
+    display: block;
+    overflow: auto;
+}
+canvas {
+    border: 2px solid #777;
+}
+
+
+
+/* Controls section */
+#controls {
+    margin: auto;
+    width: 90vw;
+}
+#controls-container {
+    display: grid;
+    width: 90vw;
+    grid-template-columns: repeat(auto-fill, 20em);
+    grid-template-rows: auto;
+    grid-gap: 0.25em;
+    justify-content: center;
+}
+.control-container {
+    max-width: 20em;
+    padding: 0.25em 0.0625em;
+    box-sizing: border-box;
+    background-color: #232;
+    color: #ded;
+    border-radius: 0.25em;
+    height: 2em;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+.control-label {
+    display: inline-block;
+    width: 9em;
+    background-color: #343;
+    color: #ded;
+    border-radius: 1em;
+    overflow: hidden;
+    margin: 0 auto;
+    vertical-align: top;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+button.control-label {
+    border-radius: 0.5em;
+    box-sizing: content-box;
+}
+.control-content {
+    display: inline-block;
+    width: 9em;
+    margin: auto;
+}
+.control-fullwidth {
+    display: inline-block;
+    width: 95%;
+    background-color: #343;
+    color: #ded;
+    border-radius: 1em;
+    margin: 0 auto;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+.control-fullwidth input[type=checkbox] {
+    width: auto;
+    vertical-align: baseline;
+}
+.control-category {
+    grid-column: 1/-1;
+    padding: 4px;
+    background-color: #343;
+    color: #ded;
+    margin-top: 0.25em;
+    font-size: 110%;
+    font-style: italic;
+    border-radius: 0.25em;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+@media screen and (max-width: 768px) {
+    #controls-container {
+        grid-template-columns: 90vw;
+    }
+    .control-container {
+        width: 90vw;
+        max-width: 90vw;
+        height: auto;
+    }
+    .control-label {
+        display: block;
+        height: 50%;
+        width: 85vw;
+        margin: 2px auto;
+    }
+    .control-content {
+        display: block;
+        height: 50%;
+        width: 85vw;
+        margin: 2px auto;
+    }
+}
+
+
+
+/* Info section */
+#info {
+    font-size: 90%;
+    width: 90vw;
+}
+#info :not(h2) {
+    text-align: left;
+    text-indent: 2em;
+}
+#info h3 {
+    text-indent: 0;
+    margin: 0;
+    margin-top: 0.25em;
+}
+#info em {
+    color: #faa;
+    
+    transition: background-color 1s, color 1s, text-shadow 1s, box-shadow 1s;
+}
+#info li {
+    text-indent: 0;
+}

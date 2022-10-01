@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar 2</title>
+    <base href="https://www.example.com/"></base>
+    <style>
+        body {
+            margin: 0;
+        }
+        #nav {
+            text-align: center;
+            padding: 0 20px;
+            height: 48px;
+            background: linear-gradient(#77a, #449);
+            font-family: 'Segoe UI', sans-serif;
+            border-bottom: 4px solid #225;
+            box-shadow: 0 0 16px #225;
+        }
+
+        #nav a {
+            display: inline-block;
+            width: 100px;
+            font-weight: normal;
+            font-size: 16px;
+            font-variant-caps: small-caps;
+            padding: 10px 6px;
+            text-decoration: none; /*override default underline on links*/
+            color: #fff;
+            margin: 4px;
+            margin-left: 20px;
+            border-radius: 40px;
+            border: 1px outset #aaa;
+            background: linear-gradient(#0001, #0003);
+            letter-spacing: 0.5px; /*compensates for width change from hover font-weight*/
+        }
+
+        #nav a:nth-child(1) {
+            margin-left: 0;
+        }
+
+        #nav a:hover {
+            background: linear-gradient(#fff8, #fff2);
+            font-weight: bold;
+            text-shadow: 0 0 8px #faa;
+            color: #faa;
+            letter-spacing: normal;
+        }
+
+        .fade-left, .fade-right {
+            position: absolute;
+            display: block;
+            top: 0;
+            width: 20px;
+            height: 48px;
+        }
+
+        .fade-left {
+            left: 0;
+            background: linear-gradient(
+                to left,
+                #0000,
+                #0003,
+                #000d);
+        }
+
+        .fade-right {
+            right: 0;
+            background: linear-gradient(
+                to right,
+                #0000,
+                #0003,
+                #000d);
+        }
+    </style>
+</head>
+<body>
+    <body>
+        <div id="nav">
+            <span class="fade-left"></span>
+
+            <a href="">Home</a>
+    
+            <a href="aboutus">About Us</a>      
+    
+            <a href="career-seekers">Services</a>
+            
+            <a href="impact">Impact</a>
+            <a href="news">News</a>
+            <a href="contact">Contact Us</a>
+
+            <span class="fade-right"></span>
+        </div>
+    </body>    
+</body>
+</html>

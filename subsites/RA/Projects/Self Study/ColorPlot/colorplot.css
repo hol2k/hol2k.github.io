@@ -1,0 +1,95 @@
+
+input[type="number"] {
+    width: 50px;
+}
+.table-wrapper {
+    border: 4px outset #aaa;
+    display: inline-block;
+    max-width: 80vw;
+    max-height: 80vw;
+    overflow: auto;
+}
+.table-wrapper table {
+    border-collapse: collapse;
+    border: none;
+    caption-side: bottom;
+}
+.table-wrapper td, .table-wrapper th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 6px;
+}
+.table-wrapper th {
+    background-color: #ccc;
+    /*text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 2px #fff, 0 0 2px #fff;*/ /*very poor performance on high cell counts*/
+    font-size: 120%;
+}
+section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+article {
+    margin: 4px auto;
+    padding: 8px;
+    background-color: #f4f7ff;
+    border: 1px solid #aaf;
+    text-align: center;
+}
+h3 {
+    margin: 4px;
+    background: linear-gradient(to right, #77c7, #aaf0);
+    padding: 4px;
+    border-radius: 16px;
+    color: #fff;
+    text-align: left;
+}
+header {
+    padding: 6px;
+    margin-bottom: 6px;
+    background: linear-gradient(to right, #77c, #aaf);
+    box-shadow: 0 0 8px 4px #55a;
+}
+h2 {
+    margin: 4px;
+    color: #fff;
+}
+.numtable-top-label, .numtable-side-label {
+    font-style: italic;
+}
+.numtable-side-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+table .numtable-corner-label {
+    font-family: monospace;
+    font-size: 150%;
+}
+caption {
+    font-style: italic;
+    font-size: 85%;
+}
+canvas {
+    width: min(80vw, 80vh);
+    height: min(80vw, 80vh);
+}
+figure {
+    text-align: center;
+}
+figcaption {
+    margin: auto;
+    width: 100%;
+    max-width: min(80vw, 80vh);
+    overflow: hidden;
+}
+#s-table-iparams-container {
+    text-indent: 2em;
+}
+.s1-controls {
+    background-color: #0002;
+    padding: 4px;
+    margin: 6px;
+    box-shadow: 0 0 4px 1px #000;
+    text-align: left;
+}

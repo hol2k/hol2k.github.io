@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Cellular Automata</title>
+
+    <!-- LICENSE: MIT
+
+        Copyright 2022 Karl Holzer
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    -->
+
+    <!--
+        This web development practice file includes examples of:
+            - HTML/CSS (basics omitted):
+                - HTML5 Semantic Tags
+                - CSS Responsive Design (Media Queries)
+                - CSS Grid
+                - Animations and Transitions
+                - Centering
+                - Gradients
+                - Font Awesome
+                - SVG
+                - Sticky Navbar
+            - JavaScript
+                - Script Locations (Inline/Internal/External)
+                - Variables
+                - Template Strings
+                - HTML Modification (innerText)
+                - Operators
+                - Control Statements
+                - Functions
+                - Objects
+                - Arrays
+                - Strings
+                - Timing (requestAnimationFrame)
+                - The DOM
+                - Events
+                - Input Querying
+                - Input Validation
+                - Regular Expressions
+                - Errors
+                - Canvas
+                - Local Storage
+                - ES6 Classes
+                - CSS Animation API
+
+        The following notable course topics are not covered:
+            - HTML/CSS:
+                - Forms
+                - Tables
+                - Images and Multimedia
+                - CSS Filters
+                - CSS Flexbox
+            - JavaScript:
+                - Date/Time
+                - The BOM
+                - Geolocation API
+    -->
+
+    <link rel="stylesheet" href="document.css">
+    <link rel="stylesheet" href="sections.css">
+    <link rel="stylesheet" href="lightmode.css">
+
+    <script src="jquery-3.6.0.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <h1>JS Practice | Cellular Automata</h1>
+    </header>
+    <nav>
+        <a href="#display">Display</a>
+        <a href="#controls">Controls</a>
+        <a href="#info">Info</a>
+    </nav>
+    <section>
+        <article>
+
+
+
+            <!-- Display -->
+
+            <a name="display" class="anchor"></a>
+            <h2>Display</h2>
+            <div id="canvas-wrapper">
+                <div id="canvas-errors">
+                    <noscript>
+                        Your browser does not support JavaScript, or has it disabled in settings. This application requires JavaScript to function.
+                    </noscript>
+                </div>
+                <canvas id="sim-display" width=1024 height=1024></canvas>
+            </div>
+            <p id="status">0 Cells Alive | Generation 0</p>
+
+
+            
+            <!-- Basic Controls -->
+
+            <a name="controls" class="anchor"></a>
+            <h2>Controls</h2>
+            <ul type="none" style="padding-left:0;">
+                <li>
+                    Left Click
+                    <svg style='transform:translateY(0.25em)' height='1.25em' viewBox = "-10 -10 120 220">
+                        <path d="
+                            M0,85
+                            V160
+                            A45,45 0 0 0 50,200
+                            A45,45 0 0 0 100,160
+                            V85
+                            Z"
+                            class = "svg-normal"
+                            />
+                        <path d="
+                            M0,75
+                            V30
+                            A45,45 0 0 1 45,0
+                            V75
+                            Z"
+                            class = "svg-highlight"
+                            />
+                        <path d="
+                            M100,75
+                            V30
+                            A45,45 0 0 0 55,0
+                            V75
+                            Z"
+                            class = "svg-normal"
+                            />
+                    </svg>
+                    on a cell to toggle its state, drag to set further cells to the new state
+                </li>
+                <li>
+                    Right Click
+                    <svg style='transform:translateY(0.25em)' height='1.25em' viewBox = "-10 -10 120 220">
+                        <path d="
+                            M0,85
+                            V160
+                            A45,45 0 0 0 50,200
+                            A45,45 0 0 0 100,160
+                            V85
+                            Z"
+                            class = "svg-normal"
+                            />
+                        <path d="
+                            M0,75
+                            V30
+                            A45,45 0 0 1 45,0
+                            V75
+                            Z"
+                            class = "svg-normal"
+                            />
+                        <path d="
+                            M100,75
+                            V30
+                            A45,45 0 0 0 55,0
+                            V75
+                            Z"
+                            class = "svg-highlight"
+                            />
+                    </svg>
+                    on any cell to advance one generation
+                </li>
+                <li>Scroll on any cell to zoom</li>
+                <li>Interact with the below form for advanced controls</li>
+            </ul>
+
+
+
+            <!-- Advanced Controls -->
+
+            <div id="controls-container">
+
+                <div class="control-category">Simulation</div>
+
+                <div class="control-container" title="Controls rate of animation, as 2/(2^n) seconds per frame. -1 to disable.">
+                    <span class="control-label">
+                        Sim Speed <i class="fa fa-info-circle" aria-hidden="true"></i>:
+                    </span>
+                    <span class="control-content">
+                        <input type="number" min=-1 value=-1 id="inp-simspeed">
+                    </span>
+                </div>
+                <div class="control-container">
+                    <span class="control-label">
+                        Size:
+                    </span>
+                    <span class="control-content">
+                        <input type="number" min=2 max=256 value=64 id="inp-simsize" onchange='regenerateGrid()'>
+                    </span>
+                </div>
+                <div class="control-container">
+                    <span class="control-fullwidth">
+                        Auto-stop on 0 changes
+                        <input type=checkbox id="inp-autostop" checked>
+                    </span>
+                </div>
+
+                <div class="control-category">Editing Tools</div>
+
+                <div class="control-container">
+                    <span class="control-fullwidth">
+                        <button onclick='regenerateGrid()'><i class="fa fa-trash" aria-hidden="true"></i> Clear Grid</button>
+                    </span>
+                </div>
+                <div class="control-container">
+                    <button class="control-label" onclick='scrambleGrid(Number($("#inp-randomfillamt").val()))'>
+                        <i class="fa fa-random" aria-hidden="true"></i> Random Infill:
+                    </button>
+                    <span class="control-content">
+                        <input type="range" id="inp-randomfillamt" min=0 max=1 step=0.001 value=0.5>
+                    </span>
+                    <script>
+                        function scrambleGrid(amt) {
+                            for(let x = 0; x < grid.size; x++) {
+                                for(let y = 0; y < grid.size; y++) {
+                                    grid.setState(x, y, Math.random() < amt ? 1 : 0);
+                                }
+                            }
+                            grid.advanceDeltaBuffer();
+                            grid.generation = 0n;
+                            renderDirty = true;
+                        }
+                    </script>
+                </div>
+
+                <div class="control-category">Behavior</div>
+
+                <div class="control-container" title="Valid input is B/C with B and C in hexadecimal (0-9, then A-F for 10-15). Optionally append a dying state count, B/C/D, with any integer D.">
+                    <span class="control-label">
+                        Rule <i class="fa fa-info-circle" aria-hidden="true">:</i>
+                    </span>
+                    <span class="control-content">
+                        <input type="text" id="inp-rule" placeholder="B/C or B/C/D">
+                    </span>
+                </div>
+                <div class="control-container" title="Von Neumann: 1 up/down/left/right.&#10;vN Cross: von Neumann with 2 cells in each direction.&#10;Moore: von Neumann + diagonals.&#10;Moore Cross: Moore + vN Cross (12 total).">
+                    <span class="control-label">
+                        Neighborhood <i class="fa fa-info-circle" aria-hidden="true"></i>:
+                    </span>
+                    <span class="control-content">
+                        <select id="inp-neighborhood">
+                            <option value="vonNeumann">Von Neumann</option>
+                            <option value="vNCross">vN Cross</option>
+                            <option value="moore" selected>Moore</option>
+                            <option value="mooreCross">Moore Cross</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="control-container" title="Toroidal: left boundary is connected to right boundary, top boundary is connected to bottom boundary.&#10;Zero: all boundary are considered dead cells.">
+                    <span class="control-label">
+                        Boundary <i class="fa fa-info-circle" aria-hidden="true">:</i>
+                    </span>
+                    <span class="control-content">
+                        <select id="inp-border">
+                            <option value="torus">Toroidal</option>
+                            <option value="fill">Zero</option>
+                        </select>
+                    </span>
+                </div>
+                
+                <div class="control-category">Preferences</div>
+
+                <div class="control-container">
+                    <span class="control-fullwidth">
+                        Dark Mode
+                        <input type=checkbox id="inp-darkmode" checked>
+                    </span>
+                </div>
+            </div>
+            <small><i class="fa fa-info-circle" aria-hidden="true"></i>: Hover for details</small>
+            <!-- not at bottom of page because articles are supposed to be self-contained as much as possible -->
+            <script src="ca-grid.js"></script>
+            <script src="cellauto.js"></script>
+        </article>
+
+
+
+        <!-- Info -->
+
+        <article id="info">
+            <a name="info" class="anchor"></a>
+            <h2>Info</h2>
+            <h3>Cellular Automata Defined:</h3>
+            <!-- TODO: put some floating figures here -->
+            <p>
+                A <em>cellular automaton</em> is a computational model involving a <em>grid of square cells</em>, which each have one of two states: <em>on/1/alive</em> or <em>off/0/dead</em>. Each fixed step in time, or <em>generation</em>, every cell counts how many <em>neighbors</em> (adjacent cells in the alive state) it has; then consults one of two lists of valid neighbor counts, or <em>rules</em>, to determine if it should change its state by the next generation.
+            </p>
+            <ul>
+                <li>If the cell was previously off, it consults the <em>birth (B) rule</em>, and turns on if any of its neighbor counts are in that rule.</li>
+                <li>If the cell was previously on, it consults the <em>continue (C)</em> or, alternatively, <em>survival (S) rule</em>, and turns off if any of its neighbor counts are in that rule.</li>
+            </ul>
+            <p>
+                Neighbor counts within one generation are not affected by the changes specified by rules, which are performed all-at-once.
+            </p>
+            <h3>Concise Rules:</h3>
+            <p>
+                These rules can be presented together as "B/C". For example, a popular rule named <em>Conway's Game of Life</em> has a birth rule of 3 (cells turn on if there are exactly 3 living neighbors) and a continue rule of 23 (cells turn off if they do not have 2 or 3 living neighbors). This is represented as e.g. "B3/S23", "B3/C23", or, more concisely, "3/23".
+            </p>
+            <h3>Neighborhoods and Boundaries:</h3>
+            <p>
+                Which cells count as neighbors depend on the <em>neighborhood</em>. For example, the <em>von Neumann neighborhood</em> counts only the nearest cell in each cardinal direction (up, left, down, right); whereas the <em>Moore neighborhood</em> also counts one in each diagonal direction.
+            </p>
+            <p>
+                The grid of cells may be either <em>finite</em> or <em>infinite</em>. A finite grid must define how its <em>boundaries</em> behave; e.g. by wrapping around to simulate the surface of a torus, or treating any out-of-bounds cell as a fixed value like 0. Due to performance constraints on the simple algorithms used, this program only supports small finite grids.
+            </p>
+            <h3>Dying/Refractory State:</h3>
+            <p>
+                This program supports a third type of cell state. Entering a rule in the format "Bxxx/Cyyy/z" (where <code>z &gt; 1</code>) will cause cells that fail the continue rule to enter a <em>dying</em> or <em>refractory state</em> for <code>z-1</code> generations. Cells in this state count as dead cells for purposes of neighbor count. They will only ever advance to the next stage once per generation, not interacting with any other rule; after they reach the last stage, they will revert to state 0.
+            </p>
+            <p>
+                Interesting examples of rules with a dying state include <em>Brian's Brain, B2/C/2</em> (note the empty continue rule: cells will always progress from alive to dying immediately) and <em>Star Wars, B2/C345/4</em>.
+        </article>
+    </section>
+</body>
+</html>

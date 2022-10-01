@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework 4</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            margin: 0;
+            background-color: #eaeeff;
+        }
+        h2, h3 {
+            font-variant: small-caps;
+            margin: 0;
+            padding: 12px;
+        }
+        h2 {
+            background-color: #66c;
+            color: #eef;
+            box-shadow: 0 0 8px #66c;
+        }
+        h3 {
+            background: linear-gradient(to right, #aaf9, #fff0);
+            width: 40%;
+            border-radius: 40px;
+            margin: 16px 0 8px 8px;
+        }
+        p {
+            padding: 8px;
+        }
+        .centered {
+            text-align: center;
+            margin: auto;
+            background-color: #0001;
+            margin-bottom: 8px;
+        }
+        img {
+            width: 300px;
+        }
+        .floated-left {
+            float: left;
+            background-color: #0001;
+            margin: 10px;
+        }
+        .floated-left img {
+            display: block;
+            height: 200px;
+            width: auto;
+            margin: auto;
+        }
+        .subcaption {
+            display: inline-block;
+            font-style: italic;
+            font-size: 80%;
+            width: 300px;
+            text-align: center;
+            margin: auto;
+        }
+        .clearing {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chiptune Music</h2>
+    <div>
+        <p><b>Chiptune</b> is a genre of music based on early computer hardware, notably arcade machines and game consoles.</p>
+        <h3>Traits</h3>
+        <p>Chiptune music is, by definition, computer-generated, and not often performed live (except e.g. in the context of a video game). Instruments in chiptune music usually consist of simple waveforms; for example, pulse waves often serve as melody and accompaniment, while triangle, sawtooth, and random noise typically feature as drums and bass. Pre-recorded sound samples may also be used, with low quality and duration to save on file space.</p>
+        <h3>Composition</h3>
+        <p>Modern chiptune music is often composed using <b>tracker software</b>, which displays music notation differently than ordinary sheet music.</p>
+        <div class="centered">
+            <img src="example-sheet-music.png"><br>
+            <span class="subcaption">A short excerpt of sheet music.</span>
+        </div>
+        <p>In sheet music, time progresses horizontally depending on note type, and pitch and instruments are both arranged vertically. Each instrument has its own staff, and height of notes on that staff indicates pitch.</p>
+        <div class="floated-left">
+            <img src="example-tracker-music.png" class="img-left">
+            <span class="subcaption">The same music as represented by a tracker.</span>
+        </div>
+        <p>In a tracker, music is represented as a table instead. Time progresses vertically in fixed steps, and there are a fixed number of channels. Each cell contains information about the pitch of note to play, and which instrument to play it with; each channel can only play one instrument at a time.</p>
+    </div>
+    <div class="clearing">
+        <h3>Examples</h3>
+    </div>
+    <div class="centered">
+        <iframe width="300" src="https://www.youtube.com/embed/NP30oJrJmO4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
+        <a href="practice6.html">(&rarr; Standalone video player)</a><br>
+        <span class="subcaption">An example of chiptune music, composed in and played back by a modern tracker: FamiTracker 0CC. The video is overlaid with a piano-roll visualizer provided by another program, NSFPlay.</span>
+    </div>
+    <div class="centered">
+        <video controls width=300>
+            <source src="video1.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video><br>
+        <span class="subcaption">Another example of chiptune music with accompanying tracker and visualizer video.</span>
+    </div>
+    <div class="centered">
+        <audio controls>
+            <source src="untitled-70.mp3" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio><br>
+        <span class="subcaption">A third example of chiptune music, provided as a standalone audio file.</span>
+    </div>
+</body>
+</html>

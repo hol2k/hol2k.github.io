@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @keyframes scroll-checkered-bg-in-1 {
+            from {
+                background-position: 0px 0px;
+            }
+            to {
+                background-position: -250px -250px;
+            }
+        }
+        @keyframes scroll-checkered-bg-in-2 {
+            from {
+                background-position: 0px 0px;
+            }
+            to {
+                background-position: -500px -500px;
+            }
+        }
+        @keyframes scroll-checkered-bg {
+            from {
+                background-position: 0px 0px;
+            }
+            to {
+                background-position: -250px -250px;
+            }
+        }
+        @keyframes scroll-text-in {
+            from {
+                transform: translate(-100vw, -100vh);
+            }
+            to {
+                transform: none;
+            }
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Calibri, sans-serif;
+            position: relative; /*allows absolute children (parallax-bg) to cover entire page height instead of only viewport height*/
+        }
+        #parallax-bg-underlay {
+            position: absolute;
+            z-index: -2;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            /* Source for one-line checkered background: https://stackoverflow.com/a/65129916 */
+            background: repeating-conic-gradient(#111122 0% 25%, #171733 0% 50%) scroll;
+            background-size: 125px 125px;
+            animation: scroll-checkered-bg-in-2 1s cubic-bezier(0, 0, 0, 0.8),
+                scroll-checkered-bg 10s linear infinite 1s;
+                
+        }
+        #parallax-bg-overlay {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: repeating-conic-gradient(transparent 0% 25%, #22223f 0% 50%) scroll;
+            background-size: 250px 250px;
+            animation: scroll-checkered-bg-in-1 1s cubic-bezier(0, 0, 0, 0.8),
+                scroll-checkered-bg 20s linear infinite 1s;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px;
+            background-color: #227;
+            z-index: 1;
+            position: relative;
+            height: 50px;
+        }
+        header h4, section h2 {
+            /*source: https://stackoverflow.com/questions/37831837/gradient-text-color*/
+            background-image: linear-gradient(to right, #78f, #abf);
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            /*outline for visibility. can't directly use text-shadow because of the background-clip*/
+            filter: drop-shadow(1px 0 0px white)
+                drop-shadow(-1px 0 0px white)
+                drop-shadow(0 1px 0px white)
+                drop-shadow(0 -1px 0px white);
+        }
+        header h4 {
+            margin: 0 0 0 8px;
+            font-size: 175%;
+        }
+        section h2 {
+            font-size: 250%;
+        }
+        section {
+            animation: scroll-text-in 1s cubic-bezier(0, 0, 0, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            text-align: center;
+            margin: auto;
+            width: 80vw;
+            height: calc(100vh - 62px);
+            flex-grow: 1;
+        }
+        article {
+            color: white;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            margin: 0 4px;
+            padding: 8px 4px;
+            display: flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            font-size: 120%;
+            border-radius: 6px;
+            transition: background-position 0.25s ease;
+            background: linear-gradient(to bottom, transparent, #fff4);
+            background-repeat: no-repeat;
+            background-position: 0 100px;
+        }
+        nav a:hover {
+            background-position: 0 0;
+        }
+        section button {
+            width: 150px;
+            height: 75px;
+            font-size: 120%;
+            border-radius: 16px;
+            background-color: #78fa;
+            border-color: #22aa;
+            color: #fff;
+            transition: background-color 0.25s, border-width 0.25s, text-shadow 0.25s;
+        }
+        section button:hover {
+            background-color: #45ae;
+            border-width: 6px;
+            text-shadow: 0 0 4px #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="parallax-bg-underlay">
+
+    </div>
+    <div id="parallax-bg-overlay">
+
+    </div>
+    <header>
+        <h4>Page Title</h4>
+        <nav>
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+            <a href="#">Link 4</a>
+        </nav>
+    </header>
+    <section>
+        <h2>Page Title</h2>
+        <article>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est molestias optio iusto doloribus. Neque vero dolor eius molestias sit nulla assumenda, magnam repellat laborum beatae iusto porro exercitationem asperiores fugiat placeat consequatur qui. Numquam atque eos cupiditate sunt. Cum accusantium atque sint impedit in dolorum alias officia veritatis? Soluta, accusamus.
+        </article>
+        <button>Link/Button</button>
+    </section>
+</body>
+</html>

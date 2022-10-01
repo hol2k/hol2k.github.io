@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @keyframes marquee-lr {
+            from {
+                left: 0;
+                border-left-color: #f00;
+            }
+            5% {
+                border-left-color: #eee;
+            }
+            95% {
+                border-right-color: #eee;
+            }
+            to {
+                border-right-color: #f00;
+                left: calc(100vw - 124px);
+            }
+        }
+        @keyframes marquee-ud {
+            from {
+                top: 50vh;
+                visibility: visible;
+            }
+            5% {
+            }
+            95% {
+                border-bottom-color: #aaa;
+            }
+            to {
+                top: calc(100vh - 124px);
+                border-bottom-color: #f00;
+            }
+        }
+
+        .anim-circle-4 {
+            visibility: hidden; /*do not show until animation begins*/
+            animation:
+                marquee-lr 2s linear infinite alternate,
+                marquee-ud 1.41421356s cubic-bezier(0.5, 0, 1.0, 1.0) infinite alternate;
+            background-color: #ccc;
+            box-shadow: 0 0 10px #555;
+            width: 100px;
+            height: 100px;
+            position: fixed;
+            border-radius: 50%;
+            border: 12px solid;
+            border-color: #aaa #eee;
+            text-align: center;
+            font-size: 200%;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="anim-circle-4"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.05s;z-index:-1;opacity:0.9"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.1s;z-index:-2;opacity:0.8"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.15s;z-index:-3;opacity:0.7"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.2s;z-index:-4;opacity:0.6"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.25s;z-index:-5;opacity:0.5"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.3s;z-index:-6;opacity:0.4"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.35s;z-index:-7;opacity:0.3"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.4s;z-index:-8;opacity:0.2"></div>
+    <div class="anim-circle-4" style="animation-delay: 0.45s;z-index:-9;opacity:0.1"></div>
+
+    <script>
+        //sets the above styles all at once + sets animation speeds to match a starting velocity instead (TODO)
+        var allAnimCircle4s = document.getElementsByClassName('anim-circle-4');
+        var velX = 400; //px/sec
+        var velY = 400;
+        var totalWidth = window.innerWidth;
+        var totalHeight = window.innerHeight / 2;
+        var timeX = totalWidth / velX;
+        var timeY = totalHeight / velY;
+        for(var i = 0; i < allAnimCircle4s.length; i++) {
+            var elem = allAnimCircle4s[i];
+            var frac = (1-i/(allAnimCircle4s.length-1));
+            elem.style =
+                "z-index: -"+i+";"
+                + "opacity:"+frac+";"
+                + "animation: marquee-lr " + timeX + "s linear infinite alternate, marquee-ud " + timeY + "s cubic-bezier(0.5, 0, 1.0, 1.0) infinite alternate;"
+                + "animation-delay: " + (i*0.05) + "s;";
+        }
+    </script>
+</body>
+</html>

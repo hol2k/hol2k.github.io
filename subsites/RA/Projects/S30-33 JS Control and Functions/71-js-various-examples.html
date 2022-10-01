@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merged JS Practice File: Basics, Control Statements, and Functions</title>
+    <link rel="stylesheet" href="../CSS/common.css">
+    <style>
+        input[type="number"] {
+            width: 50px;
+        }
+        .table-wrapper {
+            border: 4px outset #aaa;
+            display: inline-block;
+            max-width: 50vw;
+            max-height: 50vw;
+            overflow: auto;
+        }
+        .table-wrapper table {
+            border-collapse: collapse;
+            border: none;
+            caption-side: bottom;
+        }
+        .table-wrapper td, .table-wrapper th {
+            border: 1px solid black;
+            text-align: center;
+            padding: 6px;
+        }
+        .table-wrapper th {
+            background-color: #ccc;
+            /*text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 2px #fff, 0 0 2px #fff;*/ /*very poor performance on high cell counts*/
+            font-size: 120%;
+        }
+        section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        article {
+            margin: 4px auto;
+            padding: 8px;
+            background-color: #f4f7ff;
+            border: 1px solid #aaf;
+        }
+        h3 {
+            margin: 4px;
+            background: linear-gradient(to right, #77c7, #aaf0);
+            padding: 4px;
+            border-radius: 16px;
+            color: #fff;
+        }
+        header {
+            padding: 6px;
+            margin-bottom: 6px;
+            background: linear-gradient(to right, #77c, #aaf);
+            box-shadow: 0 0 8px 4px #55a;
+        }
+        h2 {
+            margin: 4px;
+            color: #fff;
+        }
+        .numtable-top-label, .numtable-side-label {
+            font-style: italic;
+        }
+        .numtable-side-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+        table .numtable-corner-label {
+            font-family: monospace;
+            font-size: 150%;
+        }
+        caption {
+            font-style: italic;
+            font-size: 85%;
+        }
+    </style>
+
+    <script src="../Scripts/util.js" type="text/javascript"></script>
+    <script>
+        function retrieveCurrentDayName() {
+            let day = new Date().getDay();
+            switch(day) {
+                case 0: return 'Sunday';
+                case 1: return 'Monday';
+                case 2: return 'Tuesday';
+                case 3: return 'Wednesday';
+                case 4: return 'Thursday';
+                case 5: return 'Friday';
+                case 6: return 'Saturday';
+                case 7: return 'Sunday';
+                default: return 'an Unknown Day';
+            }
+        }
+        function inputIdToNumVal(n) {
+            return Number(document.getElementById(n).value);
+        }
+        function maxNumberInputsByName(n1, n2) {
+            let v1 = inputIdToNumVal(n1);
+            let v2 = inputIdToNumVal(n2);
+            return v1 > v2 ? v1 : v2;
+        }
+        function signProdNumberInputsByName(n1, n2, n3) {
+            let v1 = inputIdToNumVal(n1);
+            let v2 = inputIdToNumVal(n2);
+            let v3 = inputIdToNumVal(n3);
+            //any 0 in inputs leads to 0 result
+            if(v1 === 0 || v2 === 0 || v3 === 0) return 0;
+            //...otherwise, product is positive if count of negative inputs is even
+            let countNeg = 0;
+            if(v1 < 0) countNeg++;
+            if(v2 < 0) countNeg++;
+            if(v3 < 0) countNeg++;
+            return (countNeg % 2 === 0) ? 1 : -1;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h2 class="text-outline-black">Merged JS Practice File: Basics, Control Statements, and Functions</h2>
+    </header>
+    <section>
+        <article>
+            <h3 class="text-outline-black">#1 | Day Name</h3>
+            <button onclick="this.innerHTML = `Today is ${retrieveCurrentDayName()}.`">Retrieve date...</button>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#2a | Find Maximum of 2</h3>
+
+            <input type="number" id="x2-n1"><input type="number" id="x2-n2"><br>
+            <button onclick="document.getElementById('x2-o').innerText = maxNumberInputsByName('x2-n1', 'x2-n2')">&rarr; Max &rarr;</button>
+            <span id="x2-o">...</span>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#2b | Find Sign of Product</h3>
+
+            <input type="number" id="x3-n1"><input type="number" id="x3-n2"><input type="number" id="x3-n3"><br>
+            <button onclick="document.getElementById('x3-o').innerText = signProdNumberInputsByName('x3-n1', 'x3-n2', 'x3-n3')">&rarr; SignProd &rarr;</button>
+            <span id="x3-o">...</span>
+            <!-- did not use alert because the VSCode integrated browser does not support it -->
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#2c | Sort Largest&rarr;Smallest</h3>
+            <i>Already completed in previous page (70-with-inputs.html)</i><br>
+            <iframe src="../Self Study/70-with-inputs.html" style="width:500px;height:30vh;"></iframe>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#3 | List Natural Numbers</h3>
+            <div id="natnum-o"></div>
+            <script>
+                let x = 1;
+                let nno = document.getElementById('natnum-o');
+                let nnCount = 10;
+                nno.innerHTML = `First ${nnCount} natural numbers:<br>`;
+                /*while(x <= nnCount) {
+                    nno.innerHTML += x;
+                    if(x !== nnCount)
+                        nno.innerHTML += ', ';
+                    x++;
+                }*/
+                for(let i = 1; i <= nnCount; i++) {
+                    nno.innerHTML += i;
+                    if(i !== nnCount)
+                        nno.innerHTML += ', ';
+                }
+            </script>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#4 | Multiplication Table</h3>
+            <button onclick="genMultTable()">Generate Multiplication Table</button> Size: <input type="number" min="2" max="15" value="5" id="mtable-i"></input><br>
+            <div id="mtabletarget-o" class="table-wrapper"></div>
+
+            <script>
+                function genMultTable() {
+                    let size = Number(document.getElementById('mtable-i').value);
+                    document.getElementById('mtabletarget-o').innerHTML =
+                        //older version:
+                        /*generateNaturalFunctionTable(
+                            size, size,
+                            (a, b) => a * b,
+                            '&times;',
+                            `A table of the function <code>z(x,y)=x&times;y</code> for values from 1 to ${size}.`);*/
+                        generateLinearFunctionTable(
+                            1, size, 1, 0,
+                            1, size, 1, 0,
+                            (a, b) => a * b,
+                            '&times;',
+                            `A table of the function <code>z(x,y)=x&times;y</code> for integer values from 1 to ${size}.`
+                            );
+                }
+                genMultTable();
+            </script>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#4b | Table Self Study</h3>
+            Type: <select id="s-table-itype">
+                <option value="add" data-sym="x+y" data-func="addNumbers">Addition</option>
+                <option value="sub" data-sym="x-y" data-func="subNumbers">Subtraction</option>
+                <option value="mult" data-sym="x&times;y" data-func="multNumbers">Multiplication</option>
+                <option value="div" data-sym="x&divide;y" data-func="divNumbers">Division</option>
+                <option value="exp" data-sym="x^y" data-func="expNumbers">Exponentiation</option>
+                <option value="tet" data-sym="x&uarr;&uarr;y" data-func="tetNumbers">Tetration</option>
+                <option value="pol" data-sym="(x,y) &rarr; Polar" data-func="polNumbers">Convert to Polar</option>
+                <option value="base" data-sym="x<sub>y</sub>" data-func="baseNumbers">Base</option>
+            </select><br>
+            <code>x</code>: from <input type="number" min="-15" max="15" value="1" id="s-table-ifromx"></input> 
+            to <input type="number" min="-15" max="15" value="5" id="s-table-itox"></input> 
+            step <input type="number" min="0.01" max="10" value="1" id="s-table-istepx"><br>
+            <code>y</code>: from <input type="number" min="-15" max="15" value="1" id="s-table-ifromy"></input> 
+            to <input type="number" min="-15" max="15" value="5" id="s-table-itoy"></input> 
+            step <input type="number" min="0.01" max="10" value="1" id="s-table-istepy"><br>
+            Max. precision: <input type="number" min="0" max="10" step="1" id="s-table-iprec" value="2"><br>
+            <button onclick="genSelectedTable()">Generate Table</button><br>
+            <div id="s-table-o" class="table-wrapper"></div>
+
+            <script>
+                function getMaxPrecision() {
+                    return Number(document.getElementById('s-table-iprec').value);
+                }
+                let stFuncs = {
+                    addNumbers: function (a, b) {return numToFixedNoTrail(a + b, getMaxPrecision());},
+                    subNumbers: function (a, b) {return numToFixedNoTrail(a - b, getMaxPrecision());},
+                    multNumbers: function (a, b) {return numToFixedNoTrail(a * b, getMaxPrecision());},
+                    divNumbers: function (a, b) {return numToFixedNoTrail(a / b, getMaxPrecision());},
+                    expNumbers: function (a, b) {return numToFixedNoTrail(Math.pow(a, b), getMaxPrecision());},
+                    tetNumbers: function (a, b) {
+                        var result = a;
+                        for(var i = 0; i < b; i++)
+                            result = Math.pow(result, a);
+                        return numToFixedNoTrail(result, getMaxPrecision());
+                    },
+                    polNumbers: function (a, b) {
+                        var mag = Math.sqrt(a * a + b * b);
+                        var dir = Math.atan2(b, a) * 180 / Math.PI;
+                        return `${mag.toFixed(2)}&ang;${dir.toFixed(0)}&deg;`;
+                    },
+                    baseNumbers: function (a, b) {
+                        b = Math.max(b, 2);
+                        b = Math.min(b, 36);
+                        return Number(a.toFixed(getMaxPrecision())).toString(b);
+                    }
+                };
+                function genSelectedTable() {
+                    let fx = Number(document.getElementById('s-table-ifromx').value);
+                    let fy = Number(document.getElementById('s-table-ifromy').value);
+                    let tx = Number(document.getElementById('s-table-itox').value);
+                    let ty = Number(document.getElementById('s-table-itoy').value);
+                    let sx = Number(document.getElementById('s-table-istepx').value);
+                    let sy = Number(document.getElementById('s-table-istepy').value);
+                    let sel = document.getElementById('s-table-itype');
+                    let selOpt = sel.options[sel.selectedIndex];
+                    let sym = selOpt.getAttribute('data-sym');
+                    let funcName = selOpt.getAttribute('data-func');
+                    document.getElementById('s-table-o').innerHTML =
+                        generateLinearFunctionTable(
+                            fx, tx, sx, getMaxPrecision(),
+                            fy, ty, sy, getMaxPrecision(),
+                            stFuncs[funcName],
+                            sym);
+                }
+            </script>
+        </article>
+
+        <article>
+            <!--
+
+            3. Program to display first "n" odd numbers
+
+            Exp O/P: 1     3     5	 7 ......
+
+            4. Program to display the even numbers between x & y   
+
+            5. Program to reverse a number; For example , if the number is 9835 , then O/P should be 5389
+
+            6) Program to find the sum of digits of a number
+
+            7) Display the first 15 elements of the following sequences 
+
+            a) 1	4	7	10	..
+
+            b) 1	2	4	8	..
+
+            c) 0	1	1	2	3 ....
+
+            -->
+
+            <h3 class="text-outline-black">#5 | Sequences</h3>
+            Parameters: <i>a = </i><input type="number" min=0 value=10 id="seq-in-a">, <i>b = </i><input type="number" min=0 value=20 id="seq-in-b"><br>
+            Sequence:
+            <select id="seq-in-type">
+                <option value="nats">First [a] Natural Numbers</option>
+                <option value="odds">First [a] Odd Numbers</option>
+                <option value="evens">Even Numbers in [a, b]</option>
+                <option value="rev">Reverse Digits of [a]</option>
+                <option value="sumdig">Sum Digits of [a]</option>
+                <option value="seq1">First [a] Numbers of Test Sequence 1 (1 +3)</option>
+                <option value="seq2">First [a] Numbers of Test Sequence 2 (1 x2)</option>
+                <option value="seq3">First [a] Numbers of Test Sequence 3 (Fibonacci)</option>
+                <option value="starseq">[a]-line Triangular Asterisk Matrix</option>
+                <option value="fizzbuzz">FizzBuzz from 1 to [a]</option>
+                <option value="fbs">FizzBuzzSum from 1 to BELOW [a]</option>
+            </select><br>
+            <button onclick="doSequenceCalculation()">Calculate</button><br>
+            <b>Output</b>: <span id="seq-out">Awaiting input...</span>
+            <script>
+                let seqA = document.getElementById('seq-in-a');
+                let seqB = document.getElementById('seq-in-b');
+                let seqT = document.getElementById('seq-in-type');
+                let seqO = document.getElementById('seq-out');
+                function doSequenceCalculation() {
+                    let a = Number(seqA.value);
+                    let b = Number(seqB.value);
+                    let outText;
+                    switch(seqT.value) {
+                        case 'odds':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            //iterateWithState is a function defined in util.js
+                            outText = iterateWithState(
+                                [1], //input 1: the initial state of the function
+                                a, //input 2: the total number of output values to calculate (this includes the initial state!)
+                                (iter, state) => {return state[0] + 2} //input 3: the function to iterate, which will be passed both the current iteration index and the state array
+                                )
+                                //after every iteration, the value of the function will be added to the end of the results array. this same value will also be added to the end of the state array, and the value at the start of the state array will be discarded. this was set up this way mostly for support for sequence 3 (Fibonacci).
+                                .join(', '); //finally, join the returned array together into a string delimited by spaced commas
+                            break;
+                        case 'evens':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            if(b < a) {
+                                outText = "ERROR: b cannot be less than a for the selected sequence";
+                                break;
+                            }
+                            //filterIntegers is a function defined in util.js
+                            outText = filterIntegers(
+                                a, //input 1: the start of the range to scan, inclusive
+                                b, //input 2: the end of the range to scan, inclusive
+                                x => x % 2 == 0 //input 3: integers will be added to the returned array IFF they are within the given range AND this function returns true
+                                ).join(', ');
+                            break;
+                        case 'nats':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                            }
+                            outText = iterateWithState(
+                                [1],
+                                a,
+                                (iter, state) => {return state[0] + 1;}
+                                ).join(', ');
+                            break;
+                        case 'rev':
+                            let wasNegative = a < 0;
+                            let aStr = String(Math.abs(a));
+                            outText = aStr.split('') //split into an array of characters
+                                .reverse() //then reverse the array's elements
+                                .join(''); //then rejoin with no delimiter
+                            outText = Number(outText); //reparse as number to remove leading zeroes
+                            if(wasNegative) outText = '-' + outText;
+                            break;
+                        case 'sumdig':
+                            aStrB = String(Math.abs(a));
+                            let chars = aStrB.split(''); //split into an array of characters
+                            outText = 0;
+                            for(let i = 0; i < chars.length; i++) {
+                                outText += Number(chars[i]);
+                            }
+                            outText = String(outText);
+                            break;
+                        case 'seq1':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            outText = iterateWithState([1], a, (iter, state) => {
+                                return state[0] + 3;
+                            }).join(', ');
+                            break;
+                        case 'seq2':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            outText = iterateWithState([1], a, (iter, state) => {
+                                return state[0] * 2;
+                            }).join(', ');
+                            break;
+                        case 'seq3':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            outText = iterateWithState([0, 1], a, (iter, state) => {
+                                return state[0] + state[1];
+                            }).join(', ');
+                            break;
+                        case 'starseq':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            outText = '';
+                            for(let i = 1; i <= a; i++) {
+                                outText += '<br>'; //also adds an initial br to separate from output caption -- would move after nested loop and filter by if(i <= a) otherwise
+                                for(let j = 0; j < i; j++) {
+                                    outText += '*';
+                                    if(j < a) outText += ' ';
+                                }
+                            }
+                            break;
+                        case 'fizzbuzz':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            let outArr = []
+                            for(let i = 1; i <= a; i++) {
+                                let fizz = i % 3 === 0;
+                                let buzz = i % 5 === 0;
+                                if(fizz && buzz) outArr.push('FizzBuzz');
+                                else if(fizz) outArr.push('Fizz');
+                                else if(buzz) outArr.push('Buzz');
+                                else outArr.push(i);
+                            }
+                            outText = outArr.join(', ');
+                            break;
+                        case 'fbs':
+                            if(a < 1) {
+                                outText = "ERROR: a cannot be less than 1 for the selected sequence";
+                                break;
+                            }
+                            let outVal = 0;
+                            for(let i = 1; i < a; i++) {
+                                let fizz = i % 3 === 0;
+                                let buzz = i % 5 === 0;
+                                if(fizz || buzz) outVal += i;
+                            }
+                            outText = outVal;
+                            break;
+                        default:
+                            outText = "ERROR: Invalid sequence";
+                            break;
+                    }
+
+                    seqO.innerHTML = outText;
+                }
+            </script>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#6 | Function Types</h3>
+            Example ID:
+            <select id="ex6-in-type">
+                <option value="1">No Args, No Return</option>
+                <option value="2">No Args, Return</option>
+                <option value="3">Args, No Return</option>
+                <option value="4">Args, Return</option>
+            </select><br>
+            <button onclick="doPart6Calc()">Run</button><br>
+            <b>Output</b>: <span id="ex6-out">Awaiting input...</span>
+            <script>
+                var p6o = document.getElementById('ex6-out');
+                let p6f1 = () => p6o.innerHTML = 'Part 6 F1';
+                let p6f2 = () => 'Part 6 F2 returned value';
+                let p6f3 = (arg1) => p6o.innerHTML = `Value passed to Part 6 F3 (RNG 1-10): ${arg1}`;
+                let p6f4 = (arg1) => `Part 6 F4 returning passed in value (RNG 1-10) plus string: ${arg1}`;
+
+                function doPart6Calc() {
+                    switch(document.getElementById('ex6-in-type').value) {
+                        case '1':
+                            p6f1();
+                            break;
+                        case '2':
+                            p6o.innerHTML = p6f2();
+                            break;
+                        case '3':
+                            p6f3(Math.floor(1 + Math.random() * 10)); //random from 1 to 10
+                            break;
+                        case '4':
+                            p6o.innerHTML = p6f4(Math.floor(1 + Math.random() * 10));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            </script>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#7 | 3 Sequences with 1 Function</h3>
+            <button onclick="doPart7Calc()">Run</button><br>
+            <b>Output</b>: <span id="ex7-out">Awaiting input...</span>
+            <script>
+                //variant of the iterateWithState function using a predefined increment operation
+                function iterateWithStateIncrement(initState, totalValues, incrementBy) {
+                    return iterateWithState(initState, totalValues, (iter, state) => {return state[0] + incrementBy});
+                }
+
+                //equivalent with lambda function collapsed:
+                /*
+                function iterateWithStateIncrement(state, totalValues, incrementBy) {
+                    let retv = [];
+                    for(let i = 0; i < state.length && totalValues > 0; i++) {
+                        retv[i] = state[i];
+                        totalValues--;
+                    }
+                    for(let i = 0; i < totalValues; i++) {
+                        let nv = state[0] + incrementBy;
+                        state.shift(); //remove first element from array
+                        state.push(nv); //add new value to end of array
+                        retv.push(nv); //and also to the results
+                    }
+                    return retv;
+                }
+                */
+
+                //simplified version using no array, only a single state value:
+                //also later modified with conversion to expression + addition of a default parameter
+                let returnSequentialValues = function(initialValue, totalValues, incrementBy = 1) {
+                    let state = initialValue;
+                    let retv = '' + state;
+                    totalValues--;
+                    for(let i = 0; i < totalValues; i++) {
+                        let nv = state + incrementBy;
+                        retv += ', ' + nv;
+                        state = nv;
+                    }
+                    return retv;
+                }
+
+                var p7o = document.getElementById('ex7-out');
+                function doPart7Calc() {
+                    p7o.innerHTML = '<br>';
+                    p7o.innerHTML += iterateWithStateIncrement(
+                        [1], //first value is 1
+                        10, //return 10 values in total
+                        1 //increment by 1 with each new value
+                        ).join(', ');
+                    p7o.innerHTML += '<br>';
+                    p7o.innerHTML += iterateWithStateIncrement(
+                        [2], //first value is 2
+                        10, //return 10 values in total
+                        2 //increment by 2 with each new value
+                        ).join(', ');
+                    p7o.innerHTML += '<br>';
+                    p7o.innerHTML += iterateWithStateIncrement(
+                        [1], //first value is 1
+                        10, //return 10 values in total
+                        2 //increment by 2 with each new value
+                        ).join(', ');
+                        
+                    p7o.innerHTML += '<br>';
+                    p7o.innerHTML += '<br>';
+
+                    p7o.innerHTML += returnSequentialValues(1, 10);
+                    p7o.innerHTML += '<br>';
+                    p7o.innerHTML += returnSequentialValues(2, 10, 2);
+                    p7o.innerHTML += '<br>';
+                    p7o.innerHTML += returnSequentialValues(1, 10, 2);
+                }
+            </script>
+        </article>
+
+        <article>
+            <h3 class="text-outline-black">#8 | Calculator</h3>
+            <input type="number" id="ex8-iv1" value="0">
+            <select id="ex8-iop">
+                <option value='+' selected>+</option>
+                <option value='-'>-</option>
+                <option value='x'>&times;</option>
+                <option value='/'>&divide;</option>
+                <option value='^'>^</option>
+                <option value='?'>?</option>
+            </select>
+            <input type="number" id="ex8-iv2" value="0">
+            <button onclick="runP8Calc()">Run</button><br>
+            <b>Output</b>: <span id="ex8-out">Awaiting input...</span>
+            <script>
+                //Input: two operands and an operator string.
+                //Output: an array containing [0] the result of the operation, and [1] the display text of the operator.
+                let p8Calc = function(a = 0, b = 0, op) {
+                    switch(op) {
+                        case '+':
+                        case 'add':
+                            return [a + b, '+'];
+                        case '-':
+                        case 'sub':
+                            return [a - b, '-'];
+                        case 'x':
+                        case '*':
+                        case 'mul':
+                            return [a * b, '&times;'];
+                        case '/':
+                        case 'div':
+                            return [a / b, '&divide;'];
+                        case '^':
+                        case 'exp':
+                            return [Math.pow(a, b), '^'];
+                        default:
+                            console.error(`P8Calc received unknown operator ${op}.\r\nSupported operators include (with alternatives, comma delimited, in parens):\r\nadd (+), sub (-), mul (*, x), div (/), exp (^).`);
+                            return [undefined, '[UNKNOWN OP.]'];
+                    }
+                }
+
+                function runP8Calc() {
+                    let a = Number(document.getElementById('ex8-iv1').value);
+                    let b = Number(document.getElementById('ex8-iv2').value);
+                    let op = document.getElementById('ex8-iop').value;
+                    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+                    //from a google search for "js tuples" after missing the namesake feature of C#
+                    let [result, displayOp] = p8Calc(a, b, op);
+                    document.getElementById('ex8-out').innerHTML = `${a} ${displayOp} ${b} = ${result}`;
+                }
+            </script>
+        </article>
+    </section>
+</body>
+</html>

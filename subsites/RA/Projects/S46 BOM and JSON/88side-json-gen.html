@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random JSON Generator</title>
+</head>
+<body>
+    <button onclick="generateJson()">Generate to Console</button>
+    <script>
+        function randomIntInclusive(a, b) {
+            a = Math.floor(a); b = Math.ceil(b);
+            return Math.floor(Math.random() * (b - a + 1)) + a;
+        }
+
+        function randomFromIterable(arr) {
+            if(arr == null || typeof arr[Symbol.iterator] !== 'function') throw new TypeError('Argument 1 (arr) must be an iterable');
+            let count = 0;
+            for(let item of arr)
+                count++;
+            let which = randomIntInclusive(0, count-1);
+            count = 0;
+            for(let item of arr)
+                if(count++ == which) return item;
+        }
+
+        function createSyllableBank(syllableCount, minLength, maxLength) {
+            let syllables = [];
+            let vowels = 'aeiouy';
+            let consonants = 'bcdfghjklmnpqrstvwxz';
+
+            for(let i = 0; i < syllableCount; i++) {
+                let syllableLength = randomIntInclusive(minLength, maxLength);
+                let vowelPos = randomIntInclusive(0, syllableLength - 1);
+                let syllable = '';
+                for(let j = 0; j < syllableLength; j++) {
+                    if(j == vowelPos)
+                        syllable += randomFromIterable(vowels);
+                    else
+                        syllable += randomFromIterable(consonants);
+                }
+                syllables.push(syllable);
+            }
+
+            return syllables;
+        }
+
+        function generateJson() {
+            let itemCount = 500;
+            let minAge = 10;
+            let maxAge = 100;
+            let syllables = createSyllableBank(50, 1, 3);
+            let genders = ["Male", "Female", "Other"];
+
+            //as parameter tables
+            /*
+            let jsonObj = {};
+            jsonObj['index'] = [];
+            jsonObj['uuid'] = [];
+            jsonObj['first_name'] = [];
+            jsonObj['last_name'] = [];
+            jsonObj['gender'] = [];
+            jsonObj['age'] = [];
+            jsonObj['country'] = [];
+
+            jsonObj['total_items'] = itemCount;
+
+            let countries = [];
+            let countryCount = 10;
+            for(let i = 0; i < countryCount; i++) {
+                let country = '';
+                let countryLength = randomIntInclusive(3, 6);
+                for(let j = 0; j < countryLength; j++) {
+                    country += iterableUniformRandom(syllables);
+                }
+                countries.push(country);
+            }
+
+            for(let i = 0; i < itemCount; i++) {
+                jsonObj['index'].push(i);
+                jsonObj['uuid'].push(crypto.randomUUID());
+                let nameLengthFirst = randomIntInclusive(2, 3);
+                let nameLengthLast = randomIntInclusive(2, 5);
+                let fname = '';
+                let lname = '';
+                for(let j = 0; j < nameLengthFirst; j++) {
+                    fname += iterableUniformRandom(syllables);
+                }
+                for(let j = 0; j < nameLengthLast; j++) {
+                    lname += iterableUniformRandom(syllables);
+                }
+                jsonObj['first_name'].push(fname);
+                jsonObj['last_name'].push(lname);
+                jsonObj['country'].push(iterableUniformRandom(countries));
+                jsonObj['gender'].push(iterableUniformRandom(genders));
+                jsonObj['age'].push(randomIntInclusive(minAge, maxAge));
+            }
+            */
+            
+            //as array of objects
+            let jsonObj = [];
+
+            let countries = [];
+            let countryCount = 10;
+            for(let i = 0; i < countryCount; i++) {
+                let country = '';
+                let countryLength = randomIntInclusive(3, 6);
+                for(let j = 0; j < countryLength; j++) {
+                    country += randomFromIterable(syllables);
+                }
+                countries.push(country);
+            }
+
+            for(let i = 0; i < itemCount; i++) {
+                let subObj = {};
+                subObj['index'] = i;
+                subObj['uuid'] = crypto.randomUUID();
+                let nameLengthFirst = randomIntInclusive(2, 3);
+                let nameLengthLast = randomIntInclusive(2, 5);
+                let fname = '';
+                let lname = '';
+                for(let j = 0; j < nameLengthFirst; j++) {
+                    fname += randomFromIterable(syllables);
+                }
+                for(let j = 0; j < nameLengthLast; j++) {
+                    lname += randomFromIterable(syllables);
+                }
+                subObj['first_name'] = fname;
+                subObj['last_name'] = lname;
+                subObj['country'] = randomFromIterable(countries);
+                subObj['gender'] = randomFromIterable(genders);
+                subObj['age'] = randomIntInclusive(minAge, maxAge);
+
+                jsonObj.push(subObj);
+            }
+
+            let jsonStr = JSON.stringify(jsonObj);
+
+            console.log('let employees = ' + jsonStr);
+        }
+    </script>
+</body>
+</html>

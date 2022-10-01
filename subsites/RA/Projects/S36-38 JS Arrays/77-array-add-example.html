@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Arrays</title>
+    <link rel="stylesheet" href="../CSS/common.css">
+    <style>
+        section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        article {
+            margin: 4px auto;
+            padding: 8px;
+            background-color: #f4f7ff;
+            border: 1px solid #aaf;
+            text-align: left;
+        }
+        h3 {
+            margin: 4px;
+            background: linear-gradient(to right, #77c7, #aaf0);
+            padding: 4px;
+            border-radius: 16px;
+            color: #fff;
+            text-align: left;
+        }
+        header {
+            padding: 6px;
+            margin-bottom: 6px;
+            background: linear-gradient(to right, #77c, #aaf);
+            box-shadow: 0 0 8px 4px #55a;
+        }
+        h2 {
+            margin: 4px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2 class="text-outline-black">JS Practice: Arrays (S37 5/11/2022)</h2>
+    </header>
+    <section>
+        <article>
+            <h3 class="text-outline-black">#1 | Unique-Only List</h3>
+            <input type="text"><button onclick="addItem()">Add Item</button>
+            <h4>Items:</h4>
+            <ul>
+                Nothing!
+            </ul>
+        </article>
+    </section>
+    <script>
+        let items = [];
+        function addItem() {
+            //bad practice! but technically usable for a small example like this
+            //CONVERT TO ID LOOKUPS if adding another example to this file!
+            let v = document.querySelector('input').value;
+            v = v.trim();
+            if(items.indexOf(v) >= 0 || v.length == 0) {
+                shakeElementVigorously(document.querySelector('button'));
+            } else {
+                items.push(v);
+                let ul = document.querySelector('ul');
+                if(items.length == 1)
+                    ul.innerHTML = '';
+                ul.innerHTML += `<li>${v}</li>`;
+            }
+        }
+
+        function shakeElementVigorously(elem) {
+            //discovered during file #50 (CSS transforms)
+            //https://stackoverflow.com/questions/44846614/trigger-css-animations-in-javascript
+            //led to https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API
+            elem.animate([ 
+                    {transform: 'translateX(0%)'},
+                    {transform: 'translateX(15%)'},
+                    {transform: 'translateX(0%)'},
+                    {transform: 'translateX(-15%)'},
+                    {transform: 'translateX(0%)'},
+                    {transform: 'translateX(15%)'},
+                    {transform: 'translateX(0%)'},
+                    {transform: 'translateX(-15%)'},
+                    {transform: 'translateX(0%)'}
+                ], {
+                    duration: 500,
+                    iterations: 1,
+                    easing: 'ease'
+                });
+        }
+    </script>
+</body>
+</html>

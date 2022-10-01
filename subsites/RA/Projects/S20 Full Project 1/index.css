@@ -1,0 +1,180 @@
+/* Global */
+
+:root {
+    --aside-handle-width: 24px;
+    --aside-handle-height: 100px;
+    --aside-main-width: 160px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    margin: 0;
+    background-color: white;
+}
+
+/* Header/Footer */
+
+header {
+    height: 100px;
+}
+header h1 {
+    display: inline-block;
+    /* centered roughly around first letter of header text */
+    background: repeating-conic-gradient(from 3.75deg at 30px 53px, 
+        #eef 0deg, #eef 7deg,
+        #bbd 8deg, #bbd 14deg,
+        #eef 15deg);
+    width: calc(100% - 121px);
+    margin: 0;
+    height: 100px;
+    vertical-align: top;
+    padding: 25px 0 0 20px;
+    margin-left: -4px;
+    color: #fff;
+    /* text outline -- multilayer shadow to make it stronger */
+    text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 2px #000, 0 0 2px #000, 0 0 3px #000, 0 0 3px #000;
+    font-size: 40px;
+}
+header img {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+}
+
+footer {
+    background-color: #aae;
+    padding: 15px;
+}
+
+/* Main Page Content */
+
+section {
+    margin-left: var(--aside-handle-width);
+    padding: 6px;
+}
+
+article {
+    padding: 10px 4px;
+}
+
+article:nth-child(even) {
+    background-color: #eee;
+}
+
+article h3 {
+    background: linear-gradient(to right, #00f3, #0000);
+    padding: 4px;
+    margin: 0;
+    border-radius: 16px;
+}
+
+/* External Navbar (Sticky) */
+
+nav {
+    background-color: #44a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 53px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+nav a {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 16px 20px;
+}
+nav a:hover {
+    background-color: #aaf7;
+    text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 2px #fff;
+}
+
+/* Internal Navbar (Collapsing Hover Panel) */
+
+aside {
+    position: fixed;
+    top: calc(50% - var(--aside-handle-height) / 2);
+    left: 0;
+    height: var(--aside-handle-height);
+    width: var(--aside-handle-width);
+    background: linear-gradient(to right, #55be, #88de);
+    opacity: 0.75;
+    border-radius: 0 100px 100px 0;
+    transition: top 0.25s, bottom 0.25s, height 0.25s, width 0.25s, border-radius 0.25s, opacity 0.25s;
+}
+aside a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 500;
+    margin: 0 auto;
+    padding: 15px 0;
+}
+aside a:hover {
+    background-color: #aaf7;
+    text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 2px #fff;
+}
+#aside-hover-handle-display {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+#aside-hover-handle-display span {
+    font-weight: bold;
+    color: #fff;
+    font-size: calc(var(--aside-handle-width) * 0.8);
+}
+
+aside:hover {
+    top: 15vh;
+    height: 70vh;
+    opacity: 1;
+    width: var(--aside-main-width);
+    border-radius: 0 16px 16px 0;
+    overflow-y: auto;
+}
+aside:not(:hover) a {
+    display: none;
+}
+aside:hover #aside-hover-handle-display {
+    display: none;
+}
+#aside-fallback-links {
+    display: none;
+}
+
+/* if the device doesn't support :hover, override some properties to make the aside navbar static instead */
+@media (hover: none) {
+    section, footer {
+        margin-left: var(--aside-main-width);
+    }
+
+    aside {
+        display: block;
+        position: sticky;
+        opacity: 1;
+        top: 50px;
+        bottom: unset;
+        left: 0;
+        height: 100vh;
+        width: var(--aside-main-width);
+        border-radius: 0;
+        float: left;
+    }
+
+    #aside-hover-handle-display {
+        display: none;
+    }
+
+    aside:not(:hover) a {
+        display: block;
+    }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Self Study | Key Event Animated Diagram & DIY Textarea</title>
+    <style>
+        @keyframes cursor-blink {
+            0% {opacity: 1}
+            50% {opacity: 1}
+            100% {opacity: 0}
+        }
+        .input-cursor {
+            animation: cursor-blink 0.5s step-start infinite alternate;
+        }
+        body {
+            text-align: center;
+        }
+        #main-svg {
+            margin: auto;
+            display: block;
+            width: 90vw;
+            height: 30vw;
+        }
+        #input-echo {
+            text-align: left;
+            margin: auto;
+            padding: 8px;
+            border: 4px inset #262;
+            border-radius: 8px;
+            background-color: #030;
+            color: #fff;
+            font-family: Unifont, Consolas, monospace;
+            position: relative;
+            white-space: nowrap;
+        }
+    </style>
+    <script src="support.js"></script>
+    <script src="key-data.js"></script>
+</head>
+<body>
+    <section>
+        <article>
+            <input readonly id="main-input" placeholder="&rarr; Focus to send basic keyboard input &larr;" style="width:90vw;text-align:center;margin:auto;display:block;">
+            <br>
+            <span id="status">0 Total | Line 0 0/60</span>
+            <br>
+            <svg id="main-svg" viewBox="0 -5 325 120">
+
+            </svg>
+            <div id="input-echo">
+                <span class="input-cursor" style="color:#777">|</span>
+            </div>
+        </article>
+    </section>
+
+    <script src="main-program.js"></script>
+</body>
+</html>

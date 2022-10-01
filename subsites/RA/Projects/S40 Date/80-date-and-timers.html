@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Date & Timers - Clock Example</title>
+    <style>
+        body {
+            background-color: #444;
+            font-family: 'Segoe UI', 'Calibri', sans-serif;
+            background: repeating-conic-gradient(#444 0% 25%, #333 25% 50%) 50% / 100px 100px;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+        canvas {
+            display: block;
+            margin: 10px auto;
+        }
+        .flex-break {
+            width: 100%;
+        }
+        fieldset {
+            display: inline-block;
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="clock-target" width="600" height="120">
+
+    </canvas>
+    <div class='flex-break'></div>
+    <fieldset>
+        <legend>Play/Pause</legend>
+        <button onclick="handlePauseBtn(this)">&#x23F8;</button>
+    </fieldset>
+    <fieldset>
+        <legend>Expanded Display</legend>
+        <button onclick="toggleExtraText(this)">&larr;&rarr;</button>
+        <br>Timezone Conversion:<br>
+        <select id="timezone-selector">
+            <option value="UTC">UTC</option>
+            <option value="Asia/Kolkata">Asia/Kolkata (UTC+0530)</option>
+            <option value="America/Chicago">America/Chicago (UTC-0500)</option>
+            <option value="Europe/London">Europe/London (UTC+0100)</option>
+            <option value="Australia/Sydney">Australia/Sydney (UTC+1000)</option>
+        </select>
+    </fieldset>
+
+    <script>
+        console.clear();
+
+        ////
+        // Instantiation
+
+        let now = new Date();
+        console.log(now);
+        let localEpoch = new Date(0);
+        console.log(localEpoch);
+        let localTimestamp = new Date(1652833000000);
+        console.log(localTimestamp);
+        let localReadableTimestamp = new Date(2022, 4, 17, 12, 30, 15, 587);
+        console.log(localReadableTimestamp);
+        let localVeryReadableTimestamp = new Date('Jan 1, 2022 12:30:11.938 GMT+0')
+        console.log(localVeryReadableTimestamp);
+
+
+
+        ////
+        // Get/Set; Example: Weekday Name Retrieval
+
+        console.log('%c ', 'text-indent:100vw;background-color:#000;font-size:1px;');
+
+        //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const
+        //https://stackoverflow.com/questions/15292572/how-to-initialize-a-javascript-array-with-constant-values
+        const dayNames = Object.freeze(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+
+        function getDayNameFromDate(date) {
+            let dayIndex;
+            if(!(date instanceof Date) || isNaN(dayIndex = date.getDay()))
+                return 'Invalid Day';
+            return dayNames[dayIndex];
+        }
+
+        console.log(`Local day of week: ${getDayNameFromDate(now)}`);
+        console.log(`Invalid day of week: ${getDayNameFromDate(0)}`);
+        let fdomo = new Date(now);
+        fdomo.setDate(1);
+        console.log(`DoW of first day of month (${fdomo}): ${getDayNameFromDate(fdomo)}`);
+
+
+
+        ////
+        // Example: HTML Animated Clock w/ Canvas
+
+        function lerp(a, b, x) {
+            return a + x * (b - a);
+        }
+
+        let canvas = document.getElementById('clock-target');
+        let ctx = canvas.getContext('2d');
+
+        //contains variables that multiple components might need access to
+        let clockData = {
+            pulses: [],
+            prevMs: -1,
+            prevTimestamp: -1,
+            thisFrameIsNewSecond: false,
+            paused: false,
+            showExtra: false,
+            showExtraState: 0
+            //undefined until first frame: currTimestamp, now, dt, basis, ms, sec, min, hr
+        };
+
+        function updateClockData() {
+            clockData.basis = canvas.height;
+
+            //time comparison and delta time
+            clockData.now = new Date();
+            clockData.currTimestamp = clockData.now.getTime();
+            if(clockData.prevTimestamp == -1) {
+                clockData.dt = 0;
+            } else {
+                clockData.dt = (clockData.currTimestamp - clockData.prevTimestamp) / 1000;
+            }
+            clockData.prevTimestamp = clockData.currTimestamp;
+
+            //cache component retrievals
+            clockData.ms = clockData.now.getMilliseconds();
+            clockData.sec = clockData.now.getSeconds();
+            clockData.min = clockData.now.getMinutes();
+            clockData.hr = clockData.now.getHours();
+            clockData.tzo = clockData.now.getTimezoneOffset();
+
+            //additional calculations
+            clockData.msFrac = clockData.ms / 1000;
+            clockData.secFrac = clockData.sec / 60;
+            clockData.minFrac = clockData.min / 60;
+            clockData.hrFrac = clockData.hr / 24;
+
+            clockData.thisFrameIsNewSecond = clockData.prevMs > clockData.ms;
+            clockData.prevMs = clockData.ms;
+
+            //update fade animation state
+            clockData.showExtraState += (clockData.showExtra ? 1 : -1) 
+                * clockData.dt
+                * 4;
+            clockData.showExtraState = Math.min(Math.max(clockData.showExtraState, 0), 1);
+        }
+
+        function renderSpinnersAndPulses() {
+            let msRad = clockData.msFrac * Math.PI * 2;
+            let secRad = clockData.secFrac * Math.PI * 2;
+            let minRad = clockData.minFrac * Math.PI * 2;
+            let hrRad = clockData.hrFrac * Math.PI * 2;
+
+            let spinnerMargin = clockData.basis * 0.01;
+            let spinnerCenterX = clockData.basis/2 + spinnerMargin;
+            let spinnerSize1 = clockData.basis/2 - spinnerMargin * 2;
+            let spinnerSize2 = spinnerSize1 * 0.8;
+            let spinnerSize3 = spinnerSize1 * 0.7;
+            let spinnerSize4 = spinnerSize1 * 0.5;
+            let spinnerSize5 = spinnerSize1 * 0.4;
+            let spinnerSize6 = spinnerSize1 * 0.3;
+            let spinnerSize7 = spinnerSize1 * 0.2;
+            let spinnerSize8 = spinnerSize1 * 0.15;
+
+            let arcWidth1 = Math.PI/12;
+            let arcWidth2 = Math.PI/8;
+            let arcWidth3 = Math.PI/6;
+            let arcWidth4 = Math.PI/4;
+
+            if(clockData.thisFrameIsNewSecond) {
+                clockData.pulses.push({x: spinnerCenterX + spinnerSize8, v: 0, a: 500, w: 5});
+                clockData.pulses.push({x: spinnerCenterX + spinnerSize8, v: 0, a: -500, w: 5});
+                if(clockData.sec == 0) {
+                    clockData.pulses.push({x: spinnerCenterX + spinnerSize6, v: 0, a: 100, w: 15});
+                    clockData.pulses.push({x: spinnerCenterX + spinnerSize6, v: 0, a: -100, w: 15});
+                    if(clockData.min == 0) {
+                        clockData.pulses.push({x: spinnerCenterX + spinnerSize4, v: 0, a: 50, w: 30});
+                        clockData.pulses.push({x: spinnerCenterX + spinnerSize4, v: 0, a: -50, w: 30});
+                        if(clockData.hr == 0) {
+                            clockData.pulses.push({x: spinnerCenterX + spinnerSize2, v: 0, a: 10, w: 75});
+                            clockData.pulses.push({x: spinnerCenterX + spinnerSize2, v: 0, a: -10, w: 75});
+                        }
+                    }
+                }
+            }
+
+            ctx.strokeStyle = '#44f';
+            for(let pulse of clockData.pulses) {
+                pulse.v += pulse.a * clockData.dt;
+                pulse.x += pulse.v * clockData.dt;
+
+                ctx.lineWidth = pulse.w;
+
+                ctx.beginPath();
+                ctx.moveTo(pulse.x,clockData.basis/2);
+                ctx.lineTo(pulse.x + pulse.v / 50 + 5 * Math.sign(pulse.v),clockData.basis/2);
+                ctx.stroke();
+            }
+
+            clockData.pulses = clockData.pulses.filter(pulse => pulse.x < canvas.width && pulse.x > 0);
+
+            //spinners
+            ctx.fillStyle = '#ccc';
+            ctx.beginPath();
+            let arcPosM = hrRad-arcWidth1;
+            let arcPosP = hrRad+arcWidth1;
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize1, arcPosM, arcPosP);
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize2, arcPosP, arcPosM, 1);
+            ctx.fill();
+            ctx.beginPath();
+            arcPosM = minRad-arcWidth2;
+            arcPosP = minRad+arcWidth2;
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize3, arcPosM, arcPosP);
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize4, arcPosP, arcPosM, 1);
+            ctx.fill();
+            ctx.beginPath();
+            arcPosM = secRad-arcWidth3;
+            arcPosP = secRad+arcWidth3;
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize5, arcPosM, arcPosP);
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize6, arcPosP, arcPosM, 1);
+            ctx.fill();
+            ctx.beginPath();
+            arcPosM = msRad-arcWidth4;
+            arcPosP = msRad+arcWidth4;
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize7, arcPosM, arcPosP);
+            ctx.arc(spinnerCenterX, clockData.basis/2, spinnerSize8, arcPosP, arcPosM, 1);
+            ctx.fill();
+        }
+
+        function renderBackground() {
+            //background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            //background line
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#00f';
+            ctx.beginPath();
+            ctx.moveTo(0, clockData.basis/2);
+            ctx.lineTo(canvas.width, clockData.basis/2);
+            ctx.stroke();
+        }
+
+        function renderMainClockText() {
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#fff';
+            ctx.font = `${lerp(clockData.basis/2, clockData.basis/4, clockData.showExtraState)}px sans-serif`;
+            ctx.fillText(clockData.now.toLocaleTimeString(...[],{}), clockData.basis+10, clockData.basis*0.5);
+        }
+
+        function renderExtraTimezoneText() {
+            let linePos1 = lerp(clockData.basis / 2,clockData.basis * 0.375, clockData.showExtraState);
+            let linePos2 = lerp(clockData.basis / 2,clockData.basis*0.2, clockData.showExtraState);
+            let linePos3 = lerp(clockData.basis / 2,clockData.basis * 0.625, clockData.showExtraState);
+            let linePos4 = lerp(clockData.basis / 2,clockData.basis * 0.8, clockData.showExtraState);
+
+            ctx.fillStyle = `rgba(255, 255, 255, ${clockData.showExtraState})`;
+
+            //day + timezone (top)
+            let tzoAbs = Math.abs(clockData.tzo);
+            let tzoMinutes = tzoAbs % 60;
+            let tzoHours = Math.floor(tzoAbs / 60);
+            let tzoF = (clockData.tzo > 0 ? '-' : '=') + tzoHours.toString().padStart(2, '0') + tzoMinutes.toString().padStart(2, '0');
+
+            ctx.textBaseline = 'bottom';
+            ctx.font = `${clockData.basis/6}px sans-serif`;
+            let dateStrOpts = {
+                weekday:'short',
+                year:'numeric',
+                month:'short',
+                day:'numeric'
+                };
+            let dateStr = `${clockData.now.toLocaleDateString(undefined, dateStrOpts)} `;
+            ctx.fillText(dateStr, clockData.basis * 1.04, linePos1);
+            let tlen = ctx.measureText(dateStr).width;
+            ctx.font = `${clockData.basis/10}px sans-serif`;
+            ctx.fillText(`${Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC${tzoF})`, clockData.basis, linePos2);
+
+
+
+            //utc time (bottom)
+            ctx.textBaseline = 'top';
+            ctx.font = `${clockData.basis/8}px sans-serif`;
+            let selectedOption = document.getElementById('timezone-selector').value; //todo: CACHE THIS! also look up display text of selected option
+            ctx.fillText(`In ${selectedOption}: ${clockData.now.toLocaleTimeString(undefined, {
+                timeZone: selectedOption
+            })}`, clockData.basis * 1.04, linePos3);
+            ctx.font = `${clockData.basis/10}px sans-serif`;
+            ctx.fillText(`${clockData.now.toLocaleDateString(undefined, {
+                timeZone: selectedOption
+            })}`, clockData.basis, linePos4);
+        }
+
+        //with requestAnimationFrame/setTimeout:
+        function updateClock() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            updateClockData();
+
+            renderBackground();
+            renderSpinnersAndPulses();
+            renderMainClockText();
+            renderExtraTimezoneText();
+
+            if(!clockData.paused)
+                requestAnimationFrame(updateClock);
+        }
+
+        function handlePauseBtn(elem) {
+            clockData.paused = !clockData.paused;
+            if(clockData.paused) {
+                elem.innerHTML = '&#x23F5;';
+            } else {
+                requestAnimationFrame(updateClock);
+                elem.innerHTML = '&#x23F8;';
+            }
+        }
+
+        function toggleExtraText(elem) {
+            clockData.showExtra = !clockData.showExtra;
+            if(clockData.showExtra) {
+                elem.innerHTML = '&rarr;&larr;';
+            } else {
+                elem.innerHTML = '&larr;&rarr;';
+            }
+        }
+
+        requestAnimationFrame(updateClock);
+
+        //with setInterval:
+        /*
+
+        function updateClock() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            updateClockData();
+
+            renderBackground();
+            renderSpinnersAndPulses();
+            renderMainClockText();
+            renderExtraTimezoneText();
+        }
+
+        function handlePauseBtn(elem) {
+            clockData.paused = !clockData.paused;
+            if(clockData.paused) {
+                clearInterval(clockData.timerHandle);
+                elem.innerHTML = '&#x23F5;';
+            } else {
+                clockData.timerHandle = setInterval(updateClock, 1000/60);
+                elem.innerHTML = '&#x23F8;';
+            }
+        }
+
+        clockData.timerHandle = setInterval(updateClock, 1000/60);
+
+        */
+    </script>
+</body>
+</html>

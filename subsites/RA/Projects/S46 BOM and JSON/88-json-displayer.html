@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table, form {
+            margin: 10px auto;
+            padding: 4px;
+        }
+        table, tr, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 6px;
+        }
+        th {
+            background-color: #237;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #dddfff;
+        }
+        tr:nth-child(odd) {
+            background-color: #eeefff;
+        }
+    </style>
+    <script src="RESOURCE-employees.js"></script>
+</head>
+<body>
+    <h3>Filters</h3>
+    <form id="filters-container" onchange="displayEmployees()">
+        <fieldset>
+            <legend>Hardcoded Filters</legend>
+            Gender: <select id="filter-gender">
+                <option value="">Do Not Filter</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select><br>
+            Name <small>(from start, first or last)</small>: <input id="filter-name" type="text" onkeyup="displayEmployees()">
+        </fieldset>
+    </form>
+
+    <h4>Custom Filters</h4>
+    <table id="filter-rules-container">
+        <thead>
+            <tr>
+                <th>Target Field<br><small>Must be exact match</small></th>
+                <th>Rule Type</th>
+                <th>Rule Value</th>
+                <th>Controls</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="filter-input-row">
+                <td><input type="text" class="filter-rule-target"></td>
+                <td>
+                    <select class="filter-rule-type-a" onchange="updateFilterB()">
+                        <option value="num">Number</option>
+                        <option value="str">String</option>
+                    </select>
+                    <select class="filter-rule-type-b">
+                    </select>
+                </td>
+                <td><input type="text" class="filter-rule-value"></td>
+                <td><button onclick="addFilterRule()">Add Rule</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Results</h3>
+    <b id="data-status"></b>
+    <table id="data-container">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <script>
+        let dataContainer = document.getElementById('data-container');
+        let filtersContainer = document.getElementById('filters-container');
+
+        let filterRules = [];
+
+        let filterRuleFuncMap = {
+            'num': {
+                'any': {'func': (v, rv) => typeof v === 'number', 'disp': 'Any'},
+                'geq': {'func': (v, rv) => typeof v === 'number' && v >= rv, 'disp': '>='},
+                'leq': {'func': (v, rv) => typeof v === 'number' && v <= rv, 'disp': '<='}
+            },
+            'str': {
+                'any': {'func': (v, rv) => typeof v === 'string', 'disp': 'Any'},
+                'has': {'func': (v, rv) => typeof v === 'string' && v.includes(rv), 'disp': 'Contains'},
+                'start': {'func': (v, rv) => typeof v === 'string' && v.startsWith(rv), 'disp': 'Starts With'},
+                'end': {'func': (v, rv) => typeof v === 'string' && v.endsWith(rv), 'disp': 'Ends With'}
+            }
+        };
+
+
+        let filtersBody = document.getElementById('filter-rules-container').querySelector('tbody');
+        let filterInputRow = document.getElementById('filter-input-row');
+
+        function updateFilterB() {
+            let fta = filterInputRow.querySelector('.filter-rule-type-a');
+            let ftb = filterInputRow.querySelector('.filter-rule-type-b');
+            //https://stackoverflow.com/questions/3364493/how-do-i-clear-all-options-in-a-dropdown-box/55897038#55897038
+            ftb.length = 0;
+            let newFilters = filterRuleFuncMap[fta.value];
+            for(let ruleName of Object.keys(newFilters)) {
+                let ruleObj = newFilters[ruleName];
+                let newOpt = document.createElement('option');
+                newOpt.innerText = ruleObj.disp;
+                newOpt.value = ruleName;
+                ftb.add(newOpt);
+            }
+        }
+        updateFilterB();
+
+        function addFilterRule() {
+            let newRow = document.createElement('tr');
+            let ftypea = filterInputRow.querySelector('.filter-rule-type-a');
+            let ftypeb = filterInputRow.querySelector('.filter-rule-type-b');
+            newRow.dataset.index = filterRules.length;
+            newRow.dataset.ruletarget = filterInputRow.querySelector('.filter-rule-target').value;
+            newRow.dataset.ruletypea = ftypea.value;
+            newRow.dataset.ruletypeb = ftypeb.value;
+            newRow.dataset.rulevalue = filterInputRow.querySelector('.filter-rule-value').value;
+            filterRules.push(newRow);
+
+            newRow.innerHTML = `<td>${newRow.dataset.ruletarget}</td><td>${ftypea.options[ftypea.selectedIndex].text}/${ftypeb.options[ftypeb.selectedIndex].text}</td><td>${newRow.dataset.rulevalue}</td><td><button onclick='removeFilterRule(this)'>Delete Rule</button></td>`;
+
+            filtersBody.appendChild(newRow);
+            filtersBody.appendChild(filterInputRow);
+
+            displayEmployees();
+        }
+
+        function removeFilterRule(elem) {
+            filterRules.splice(filterRules.indexOf(elem), 1)[0].remove();
+            displayEmployees();
+        }
+
+        function getFilteredEmployees() {
+            let retv = employees;
+
+            let gender = filtersContainer.querySelector('#filter-gender').value;
+            if(gender != '')
+                retv = retv.filter(emp => emp.gender == gender);
+            let nameSearch = filtersContainer.querySelector('#filter-name').value;
+
+            if(nameSearch.length > 0)
+                retv = retv.filter(emp => emp.first_name.startsWith(nameSearch) || emp.last_name.startsWith(nameSearch));
+
+            for(let rule of filterRules) {
+                let ruleObj = filterRuleFuncMap[rule.dataset.ruletypea][rule.dataset.ruletypeb];
+                retv = retv.filter(emp => ruleObj.func(emp[rule.dataset.ruletarget], rule.dataset.rulevalue))
+            }
+
+            return retv;
+        }
+
+        function displayEmployees() {
+            let body = dataContainer.querySelector('tbody');
+            //clear old content
+            body.innerHTML = '';
+
+            let filteredEmployees = getFilteredEmployees();
+
+            for(let i = 0; i < filteredEmployees.length; i++) {
+                let row = document.createElement('tr');
+
+                let c1 = document.createElement('td');
+                c1.innerText = `ID_${filteredEmployees[i].index}`;
+                c1.style.textAlign = 'center';
+                row.appendChild(c1);
+
+                let c2 = document.createElement('td');
+                c2.innerText = `${filteredEmployees[i].first_name} ${filteredEmployees[i].last_name}`;
+                row.appendChild(c2);
+
+                let c3 = document.createElement('td');
+                c3.innerText = filteredEmployees[i].gender;
+                row.appendChild(c3);
+
+                let c4 = document.createElement('td');
+                c4.innerText = filteredEmployees[i].age;
+                row.appendChild(c4);
+
+                let c5 = document.createElement('td');
+                c5.innerText = filteredEmployees[i].country;
+                row.appendChild(c5);
+
+                body.appendChild(row);
+            }
+
+            document.getElementById('data-status').innerText = `Displaying ${filteredEmployees.length}/${employees.length} entries`;
+        }
+
+        displayEmployees();
+    </script>
+</body>
+</html>

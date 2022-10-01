@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /*sources for CSS part:
+        https://stackoverflow.com/questions/22421439/convert-field-of-view-value-to-css3d-perspective-value
+        https://stackoverflow.com/questions/3779534/how-do-i-disable-text-selection-with-css-or-javascript
+        https://stackoverflow.com/questions/35361986/css-gradient-checkerboard-pattern
+        */
+        
+        /**** global variables and style ****/
+
+        :root {
+            --cube-width: 130px;
+            --cube-height: 200px;
+            --cube-depth: 370px;
+            --perspective-depth: 500px;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Calibri', sans-serif;
+            background: repeating-conic-gradient(#888 0% 25%, #aaa 25% 50%) 50% / 100px 100px;
+        }
+
+
+
+        /**** cube container and overall style ****/
+
+        #cube {
+            width: var(--cube-width);
+            height: var(--cube-height);
+            color: #fff;
+
+            position: absolute;
+            left: calc(50vw - var(--cube-width)/2);
+            top: calc(50vh - var(--cube-height)/2);
+            transform-style:preserve-3d;
+            transform:perspective(var(--perspective-depth));
+        }
+        #cube div {
+            position: absolute; /*keep all divs at same size and position within parent, will move with transform instead*/
+
+            /*both vertically and horizontally center text regardless of linecount:*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transform-style: preserve-3d;
+        }
+
+
+
+        /**** individual cube faces ****/
+
+        /*note: the center of rotation of each face is its bounding box center, NOT e.g. its upper left corner! this means due to width/height, CoR starts at (width/2, height/2, 0).*/
+        /*this cube is set up such that its local bounds stretch from (0, 0, -depth/2) to (width, height, depth/2), but its global center of rotation is (width/2, height/2, depth/2) because of the calculated offset on #cube*/
+        .face-front {
+            width: var(--cube-width);
+            height: var(--cube-height);
+            transform: translateZ(calc(var(--cube-depth)/2)); /*translate along the Z axis, towards the screen (+Z), by half of the cube's Z size*/
+                /*center is now (width/2, height/2, depth/2)*/
+            background-color: #44f;
+        }
+        .face-back {
+            width: var(--cube-width);
+            height: var(--cube-height);
+            transform:
+                translateZ(calc(0px - var(--cube-depth)/2)) /*translate along the Z axis, away from the screen (-Z), by half of the cube's Z size*/
+                /*center is now (width/2, height/2, -depth/2)*/
+                rotateX(180deg) /*correct orientation: ...then flip around the X axis*/
+                rotateZ(180deg) /*...then spin around the Z axis. as viewed in its initial state, this is effectively a "mirror vertically" then "rotate 180 degrees" operation in an image editor*/;
+            background-color: #117;
+        }
+        .face-left {
+            width: var(--cube-depth);
+            height: var(--cube-height);
+            transform:
+                /*reminder: center starts in a weird place, (depth/2, height/2, 0)!*/
+                translateX(calc(0px - var(--cube-depth) / 2)) 
+                /*center is now (0, height/2, 0)*/
+                rotateY(-90deg) /*rotate the face along the Y axis (left/right 'away' from screen -- face is no longer visible in initial state because it's viewed edge-on as a vertical line)*/;
+            background-color: #711;
+        }
+        .face-right {
+            width: var(--cube-depth);
+            height: var(--cube-height);
+            transform:
+                translateX(calc(0px - var(--cube-depth) / 2))
+                /*center is now (0, height/2, 0)*/
+                translateX(var(--cube-width))
+                /*center is now (width, height/2, 0)*/
+                rotateY(90deg);
+            background-color: #f44;
+        }
+        .face-top {
+            width: var(--cube-width);
+            height: var(--cube-depth);
+            transform:
+                translateY(calc(0px - var(--cube-depth) / 2))
+                rotateX(90deg);
+            background-color: #4f4;
+        }
+        .face-bottom {
+            width: var(--cube-width);
+            height: var(--cube-depth);
+            transform:
+                translateY(calc(0px - var(--cube-depth) / 2))
+                translateY(var(--cube-height))
+                rotateX(-90deg);
+            background-color: #171;
+        }
+
+
+
+        /**** trackpad ****/
+
+        #hover-panel {
+            display: fixed;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 150px;
+            height: 150px;
+            background-color: #000a;
+            border-radius: 50%;
+            user-select: none;
+            z-index: 999999999999; /*keep WAY in front*/
+            color: #fff;
+        }
+
+        .arrow {
+            display: inline-block;
+            width:16px;
+            height:16px;
+            border: 4px solid white;
+            border-left: none;
+            border-top: none;
+        }
+
+        .arrow-up {
+            transform: rotate(-135deg);
+        }
+        .arrow-left {
+            transform: rotate(135deg);
+        }
+        .arrow-down {
+            transform: rotate(45deg);
+        }
+        .arrow-right {
+            transform: rotate(-45deg);
+        }
+        #hover-panel table {
+            width:100%;
+            height:100%;
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px;
+        }
+
+
+
+        /**** size panel ****/
+
+        #sizes-panel {
+            display: fixed;
+            position: absolute;
+            top: 10px;
+            left: 170px;
+            width: 350px;
+            height: 150px;
+            background-color: #000a;
+            border-radius: 16px;
+            z-index: 999999999999;
+            color: #fff;
+        }
+        #sizes-panel table {
+            width: 100%;
+            height: 100%;
+        }
+        #sizes-panel table td:first-child {
+            text-align: right;
+        }
+        #sizes-panel table td:last-child {
+            text-align: left;
+        }
+        #sizes-panel input {
+            width: 80px;
+        }
+
+
+        /**** nested hover transform example ****/
+        #nest-onhover-example-left {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            background: url("../Images/fromclass/door-left.png");
+            background-size: 100% 100%;
+            transform-origin: left;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+        #nest-onhover-example-right {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            right: 0;
+            background: url("../Images/fromclass/door-right.png");
+            background-size: 100% 100%;
+            transform-origin: right;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+        div:not(#cube):hover #nest-onhover-example-left {
+            transform: rotateY(-135deg);
+        }
+        div:not(#cube):hover #nest-onhover-example-right {
+            transform: rotateY(135deg);
+        }
+
+
+
+        /**** clear button/animation ****/
+        @keyframes scroll-bg-x {
+            from {
+                background-position-x: 0px;
+            }
+            to {
+                background-position-x: -28.284px; /*width / sin(gradient angle)*/
+            }
+        }
+        #sizes-panel #range-reset {
+            width: 160px;
+            margin: 0 auto;
+            display: block;
+            font-weight: bold;
+            background-color: #f004;
+            color: #f77;
+        }
+        #range-reset:hover {
+            background: repeating-linear-gradient(45deg, #f77a 0px 10px, #ff7a 10px 20px);
+            background-size: 320px 160px;
+            text-shadow: 0 0 3px #000, 0 0 2px #000, 0 0 1px #000;
+            animation: scroll-bg-x 0.5s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="hover-panel">
+        <table>
+            <tr>
+                <td></td>
+                <td><i class="arrow arrow-up"></i></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><i class="arrow arrow-left"></i></td>
+                <td>Rot.</td>
+                <td><i class="arrow arrow-right"></i></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><i class="arrow arrow-down"></i></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div id="sizes-panel">
+        <form id="sizes-form">
+            <table>
+                <tr>
+                    <td>Width</td>
+                    <td><input id="range-width" onchange="HandleInputsChanged()" type="range" min="10" max="500" value="100"></td>
+                    <td id="label-width">0</td>
+                </tr>
+                <tr>
+                    <td>Height</td>
+                    <td><input id="range-height" onchange="HandleInputsChanged()" type="range" min="10" max="500" value="200"></td>
+                    <td id="label-height">0</td>
+                </tr>
+                <tr>
+                    <td>Depth</td>
+                    <td><input id="range-depth" onchange="HandleInputsChanged()" type="range" min="10" max="500" value="300"></td>
+                    <td id="label-depth">0</td>
+                </tr>
+                <tr>
+                    <td>Field of View</td>
+                    <td><input id="range-fov" onchange="HandleInputsChanged()" type="range" min="1" max="179" value="90"></td>
+                    <td id="label-fov">0</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="reset" id="range-reset"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="cube">
+        <div class="face-front">
+            <details><summary>&uarr;+Z&uarr;</summary>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum consequuntur cumque earum necessitatibus ad laborum omnis excepturi corrupti tempora, veniam consequatur temporibus et, culpa adipisci.
+            </details>
+            <div id="nest-onhover-example-left"></div>
+            <div id="nest-onhover-example-right"></div>
+        </div>
+        <div class="face-back">
+            &uarr;-Z&uarr;
+        </div>
+        <div class="face-left">
+            &uarr;-X&uarr;
+        </div>
+        <div class="face-right">
+            &uarr;+X&uarr;
+        </div>
+        <div class="face-top">
+            &uarr;+Y&uarr;
+        </div>
+        <div class="face-bottom">
+            &uarr;-Y&uarr;
+        </div>
+    </div>
+
+    <script>
+        /* sources for JS part:
+        https://stackoverflow.com/questions/3234256/find-mouse-position-relative-to-element
+        https://www.w3schools.com/jsref/prop_style_transform.asp
+        https://stackoverflow.com/questions/322378/javascript-check-if-mouse-button-down
+        https://stackoverflow.com/questions/37801882/how-to-change-css-root-color-variables-in-javascript
+        https://stackoverflow.com/questions/47028665/pure-javascript-detect-change-in-number-typed-input-value
+        https://developer.mozilla.org/en-US/docs/Web/API/Window/innerHeight
+        https://stackoverflow.com/questions/44846614/trigger-css-animations-in-javascript
+        https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset_event
+        https://stackoverflow.com/questions/10319289/how-to-execute-code-after-html-form-reset-with-jquery
+        */
+
+        var controls = document.getElementById("hover-panel");
+        var cube = document.getElementById("cube");
+        var currMouseX = 0;
+        var currMouseY = 0;
+
+        var widthSlider = document.getElementById("range-width");
+        var heightSlider = document.getElementById("range-height");
+        var depthSlider = document.getElementById("range-depth");
+        var fovSlider = document.getElementById("range-fov");
+
+        var widthLabel = document.getElementById("label-width");
+        var heightLabel = document.getElementById("label-height");
+        var depthLabel = document.getElementById("label-depth");
+        var fovLabel = document.getElementById("label-fov");
+
+        var isOrthographic = false;
+
+        var currRotX = 0;
+        var currRotY = 0;
+        var currMouseIsDown = false;
+
+        //store the mouse location whenever the mouse moves or is pressed so HandleTrackpadHover can use it
+        function StoreMouseInfo(e) {
+            currMouseX = e.clientX;
+            currMouseY = e.clientY;
+            var btns = e.buttons !== undefined ? e.buttons : e.which;
+            currMouseIsDown = btns !== 0;
+        }
+        document.addEventListener('mousemove', StoreMouseInfo);
+        document.addEventListener('mouseup', StoreMouseInfo);
+        document.addEventListener('mousedown', StoreMouseInfo);
+
+        //set the variables defined in :root CSS, entire page style will be recalculated based on the new values
+        function HandleInputsChanged() {
+            //update properties from inputs
+            document.documentElement.style.setProperty('--cube-width', widthSlider.value + "px");
+            document.documentElement.style.setProperty('--cube-height', heightSlider.value + "px");
+            document.documentElement.style.setProperty('--cube-depth', depthSlider.value + "px");
+            var widFac = window.innerWidth * window.innerWidth / 4;
+            var heiFac = window.innerHeight * window.innerHeight / 4;
+
+            var perspDepthFromFoV = Math.pow( widFac + heiFac, 0.5 ) / Math.tan( (fovSlider.value/2) * Math.PI / 180 );
+            document.documentElement.style.setProperty('--perspective-depth', perspDepthFromFoV + "px");
+            isOrthographic = (fovSlider.value/2) <= 5;
+
+            //update labels from new properties
+            widthLabel.innerHTML = document.documentElement.style.getPropertyValue('--cube-width');
+            heightLabel.innerHTML = document.documentElement.style.getPropertyValue('--cube-height');
+            depthLabel.innerHTML = document.documentElement.style.getPropertyValue('--cube-depth');
+            if(isOrthographic) {
+                fovLabel.innerHTML = "Orthographic";
+            } else {
+                fovLabel.innerHTML = (fovSlider.value) + "&deg; (" +    document.documentElement.style.getPropertyValue('--perspective-depth') + ")";
+            }
+            RecalculateCubeTransform();
+        }
+
+        HandleInputsChanged(); //initial update
+
+        document.getElementById('sizes-form').addEventListener(
+            'reset', function ResetInputsDelayed() {
+                //delay 1 frame to give form time to actually reset
+                setTimeout(function ResetInputsNow() {
+                    HandleInputsChanged();
+                    document.getElementById('sizes-panel').animate(
+                        [ 
+                            {transform: 'translateX(0%)'},
+                            {transform: 'translateX(15%)'},
+                            {transform: 'translateX(0%)'},
+                            {transform: 'translateX(-15%)'},
+                            {transform: 'translateX(0%)'},
+                            {transform: 'translateX(15%)'},
+                            {transform: 'translateX(0%)'},
+                            {transform: 'translateX(-15%)'},
+                            {transform: 'translateX(0%)'}
+                        ], {
+                            duration: 500,
+                            iterations: 1,
+                            easing: 'ease'
+                        }
+                    );
+                });
+        });
+
+        var lastFrameTimeMs = performance.now();
+        function MainAnimationLoop() {
+            var currFrameTimeMs = performance.now();
+            var deltaTimeSec = (currFrameTimeMs - lastFrameTimeMs) / 1000;
+
+            HandleTrackpadInput(deltaTimeSec);
+
+            requestAnimationFrame(MainAnimationLoop); //requests that the browser calls this function at as close to 60 frames per second(?) as possible.
+
+            lastFrameTimeMs = currFrameTimeMs;
+        }
+        
+        var maxUserRotationSpeedDegPerSec = 360;
+
+        function HandleTrackpadInput(dt) {
+            //get the bounding box of the trackpad div
+            var rect = controls.getBoundingClientRect();
+            //calculate normalized vector between cursor position and center of trackpad's bounding box
+            var xFrac = ((currMouseX - rect.left)/rect.width - 0.5) * 2;
+            var yFrac = ((currMouseY - rect.top)/rect.height - 0.5) * 2;
+            //(xFrac, yFrac) will be (0, 0) at top left corner and (1, 1) at bottom right corner. any value outside either of these ranges means the cursor is not hovering the trackpad div's bounding box, but we need to do some polar coordinate math to account for border-radius making it a circle
+            var theta = Math.atan2(yFrac, xFrac); //angle the cursor is at around the center of the trackpad
+            var mag = Math.sqrt(xFrac * xFrac + yFrac * yFrac); //normalized distance between the cursor and the center of the trackpad -- if > 1, cursor is not over trackpad.
+            if(mag < 1 && currMouseIsDown) {
+                //increment stored rotation values based on where the cursor is relative to the center of the trackpad
+                var scaleByTimeAndSpeed = maxUserRotationSpeedDegPerSec * dt;
+                currRotX += xFrac * scaleByTimeAndSpeed;
+                currRotY += yFrac * scaleByTimeAndSpeed;
+                RecalculateCubeTransform();
+            }
+        }
+
+        function RecalculateCubeTransform() {
+            //first perform an X-axis rotation (tilt vertically relative to screen, as if rolling your wrist forward or backward towards your fingers while holding an object in your palm) based on trackpad Y (up/down)
+            //then perform a Y-axis rotation (tilt horizontally relative to screen, as if rotating your entire arm left or right while keeping your wrist fixed) based on trackpad X (left/right)
+            cube.style.transform = (isOrthographic ? "" : "perspective(var(--perspective-depth)) ") + "rotateX(" + (-currRotY) + "deg) rotateY(" + currRotX + "deg) ";
+        }
+
+        requestAnimationFrame(MainAnimationLoop);
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+body.lightmode {
+    background-color: #eeffee;
+    color: #121;
+}
+
+.lightmode input, .lightmode button, .lightmode select, .lightmode option {
+    background-color: #cdc;
+    color: #121;
+}
+
+.lightmode button:hover {
+    background-color: #afa;
+    text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff;
+}
+
+.lightmode #info em {
+    color: #a00;
+}
+
+.lightmode .control-container {
+    background-color: #ded;
+    color: #121;
+}
+.lightmode .control-label {
+    background-color: #cdc;
+    color: #121;
+}
+.lightmode .control-fullwidth {
+    background-color: #cdc;
+    color: #121;
+}
+.lightmode .control-category {
+    background-color: #cdc;
+    color: #121;
+}
+
+.lightmode nav {
+    background-color: #cfc;
+    box-shadow: 0 0 2px 4px #4f47;
+}
+
+.lightmode nav a {
+    color: #44f;
+}
+
+.lightmode .svg-normal {
+    fill: #000;
+}
+
+.lightmode .svg-highlight {
+    fill: #f00;
+}

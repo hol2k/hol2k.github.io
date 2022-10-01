@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Advanced RNG, WebGL, Change Event</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #main-content {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #controls {
+            position: fixed;
+            right: 4px;
+            top: 4px;
+            background-color: #fffd;
+            color:#000;
+            z-index:1;
+            padding:4px;
+            border-radius:4px;
+        }
+
+        input {
+            width: 4em;
+            height: 1em;
+        }
+    </style>
+    <!-- public domain simplex noise library - https://github.com/blindman67/SimplexNoiseJS -->
+    <script src="../../Scripts/ThirdParty/simplexNoise.js"></script>
+    <!-- threejs, MIT-licensed 3D library - https://threejs.org/ -->
+    <script src="../../Scripts/ThirdParty/three.min.js"></script>
+    <!-- statsjs, MIT-licensed framerate status panel library - https://github.com/mrdoob/stats.js/ -->
+    <script src="../../Scripts/ThirdParty/stats.min.js"></script>
+    <!-- self-authored, extremely barebones, ECM (Entity Component Model) library; to make working with THREE a little easier coming from Unity Engine -->
+    <script src="../LWCGE/lwcge.js"></script>
+    <script src="main.js">
+    </script>
+</head>
+<body>
+    <header>
+
+    </header>
+    <aside id="errors">
+        <noscript>
+            <div class="errorMsg">Unable to use JavaScript. Your browser or machine may not support it, or you or your administrator may have disabled it. JavaScript is a required dependency for this demonstration/practice app and cannot have fallback behavior.</div>
+        </noscript>
+    </aside>
+    <section>
+        <article id="main-content">
+            <div id="controls">
+                <fieldset id="inputgroup-terrain">
+                    <legend>Terrain Generation</legend>
+                    <table>
+                        <tr>
+                            <td>Seed:</td><td><input id="input-seed" type="number" value="0"></td>
+                            <td>X Offset:</td><td><input id="input-x" type="number" value="0" step="0.1"></td>
+                            <td>Y Offset:</td><td><input id="input-y" type="number" value="0" step="0.1"></td>
+                        </tr>
+                        <tr>
+                            <td>XY Scale:</td><td><input id="input-xyscale" type="range" value="4" min="0.01" max="10" step="0.01"></td>
+                            <td>Z Scale:</td><td><input id="input-zscale" type="range" value="0.2" min="0.01" max="10" step="0.01"></td>
+                            <td>Resolution (2<sup>n</sup>):</td><td><input id="input-res" type="range" value="8" step="1" min="2" max="10"></td>
+                        </tr>
+                        <tr>
+                            <td>Octaves:</td><td><input id="input-octs" type="range" value="6" step="1" min="1" max="8"></td>
+                            <td>Persistence:</td><td><input id="input-pers" type="range" value="0.3" step="0.01" min="0.01" max="1"></td>
+                            <td>Lacunarity:</td><td><input id="input-lac" type="range" value="2" step="0.01" min="1" max="8"></td>
+                        </tr>
+                    </table>
+                    <input type="checkbox" id="input-precisionmode">Precision Input Mode
+                </fieldset>
+                <fieldset>
+                    <legend>Scene</legend>
+                    Light Type:
+                    <input type="radio" name="input-light-type" value="0" checked>Point
+                    <input type="radio" name="input-light-type" value="1">Area
+                    <input type="radio" name="input-light-type" value="2">Dir.
+                </fieldset>
+            </div>
+        </article>
+    </section>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I.W.Dev. L32 | Navigation Assignment</title>
+    <style>
+
+        /*Global*/
+
+        :root {
+            --header-height: 60px;
+            --navbar-handle-height: 30px;
+            --navbar-handle-width: 100px;
+        }
+        body {
+            background: repeating-conic-gradient(
+                from -10deg
+                at 50% 10px,
+                #abd 0deg, #def 1deg,
+                #def 19deg, #abd 20deg,
+                #abd 30deg);
+            background-repeat: no-repeat;
+            background-size: 100vw max(100vh, 100%); /*fill entire window even if page content is shorter than window*/
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /*Main Page Content*/
+
+        section {
+            border-radius: 10px;
+            box-shadow: 0 0 10px #227;
+            margin: 8px;
+            padding: 8px;
+        }
+
+        article {
+            background: linear-gradient(to bottom, #defd, #effe);
+            border-radius: 10px;
+            margin: 4px;
+            padding: 4px;
+        }
+
+        section > h2 {
+            color: #00a;
+        }
+
+        article h2 {
+            color: #007;
+        }
+
+        /*Header/Footer*/
+
+        h1 {
+            margin: 0;
+            padding: 8px;
+            line-height: 1;
+        }
+
+        header, footer {
+            color: #fff;
+            width: 100%;
+        }
+
+        header {
+            background: linear-gradient(to bottom, #459, #67c);
+            height: var(--header-height);
+            font-size: calc(var(--header-height) * 0.4 - 4px);
+        }
+
+        footer {
+            text-align: center;
+            background: linear-gradient(to top, #459, #67c);
+            position: fixed;
+            bottom: 0;
+        }
+
+        /*Floating Navbar*/
+
+        nav {
+            text-align: center;
+            position: relative;
+            top: 0;
+            left: calc(50% - var(--navbar-handle-width) / 2);
+            right: calc(50% - var(--navbar-handle-width) / 2);
+            height: var(--navbar-handle-height);
+            width: var(--navbar-handle-width);
+            transition: width 0.15s, height 0.15s, left 0.15s, right 0.15s, opacity 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.625;
+        }
+        #nav-hide {
+            border-radius:  0 0 var(--navbar-handle-width) var(--navbar-handle-width);
+            font-size: 30px;
+            text-align: center;
+            line-height: 1;
+            color: #fff;
+            background: linear-gradient(225deg, #006, #003, #002);
+            height: 100%;
+            width: 100%;
+        }
+        nav:hover #nav-hide {
+            display: none;
+        }
+        #nav-show {
+            background: linear-gradient(225deg, #006, #003, #002);
+            display: none;
+        }
+        nav:hover #nav-show {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        nav:hover {
+            width: var(--navbar-width);
+            left: 0;
+            right: 0;
+            width: 100%;
+            opacity: 0.9;
+            height: 50px;
+        }
+        nav a {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 20px;
+            text-align: center;
+            color: #fff;
+            padding: 10px 5px;
+        }
+        nav a:hover {
+            background-color: #fff4;
+        }
+        #nav-sticky-dock {
+            position: sticky;
+            width: 100%;
+            height: 0;
+            top: 0;
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Page Header</h1>
+    </header>
+    <div id="nav-sticky-dock"> <!-- had sticky directly on nav previously, but this caused it to take up vertical space while in static mode + shift rest of page down while animating -->
+        <nav>
+            <div id="nav-show">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+                <a href="#">Link 4</a>
+                <a href="#">Link 5</a>
+            </div>
+            <div id="nav-hide">
+                &darr;&darr;&darr;
+            </div>
+        </nav>
+    </div>
+    <section>
+        <h2>Section Subheader</h2>
+        <hr>
+        <article>
+            <h2>Article 1</h2>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi, iusto dolor! Fuga similique architecto nulla quod non dignissimos dicta adipisci est, rerum unde obcaecati alias atque fugit necessitatibus perspiciatis ex quidem consequatur molestias animi quibusdam? Quo sed aspernatur dolore ut inventore. Dolorum nobis quo ducimus facere ad. Eligendi, iure! Accusantium?</p>
+        </article>
+        <article>
+            <h2>Article 2</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius molestiae, accusamus quam provident repellat, perspiciatis debitis delectus esse maiores alias illo aut vel, necessitatibus est!</p>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestias voluptas nobis nisi aliquid voluptatem soluta necessitatibus, maxime dignissimos deserunt inventore, placeat enim veritatis. Libero, officia?</p>
+        </article>
+        <article>
+            <h2>Article 3</h2>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis, voluptates!</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, alias commodi animi quisquam repudiandae laudantium tenetur adipisci architecto nesciunt est.</p>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto unde ipsam assumenda maiores eaque nam, vel dolor hic eligendi accusamus perferendis nisi, odio quasi ratione quis quisquam quae voluptas quod.</p>
+        </article>
+    </section>
+    <section>
+        <h2>Section Subheader 2</h2>
+        <hr>
+        <article>
+            <h2>Article 1b</h2>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi, iusto dolor! Fuga similique architecto nulla quod non dignissimos dicta adipisci est, rerum unde obcaecati alias atque fugit necessitatibus perspiciatis ex quidem consequatur molestias animi quibusdam? Quo sed aspernatur dolore ut inventore. Dolorum nobis quo ducimus facere ad. Eligendi, iure! Accusantium?</p>
+        </article>
+        <article>
+            <h2>Article 2b</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius molestiae, accusamus quam provident repellat, perspiciatis debitis delectus esse maiores alias illo aut vel, necessitatibus est!</p>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestias voluptas nobis nisi aliquid voluptatem soluta necessitatibus, maxime dignissimos deserunt inventore, placeat enim veritatis. Libero, officia?</p>
+        </article>
+        <article>
+            <h2>Article 3b</h2>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis, voluptates!</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, alias commodi animi quisquam repudiandae laudantium tenetur adipisci architecto nesciunt est.</p>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto unde ipsam assumenda maiores eaque nam, vel dolor hic eligendi accusamus perferendis nisi, odio quasi ratione quis quisquam quae voluptas quod.</p>
+        </article>
+    </section>
+    <footer>
+        <h3>Page Footer</h3>
+    </footer>
+</body>
+</html>

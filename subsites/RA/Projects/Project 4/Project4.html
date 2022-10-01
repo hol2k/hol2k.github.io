@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I.W.Dev L27 | Project 4</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Calibri, sans-serif;
+            text-align: center;
+            background: linear-gradient(225deg, hsl(210, 50%, 50%), hsl(220, 50%, 30%));
+            color: #fff;
+        }
+        form {
+            text-align: left;
+            max-width: 800px;
+            margin: auto;
+            width: 90%;
+        }
+        h1 {
+            margin: 10px;
+            margin-bottom: 0;
+            text-indent: -1em;
+        }
+        h2 {
+            margin: 10px;
+            margin-top: 0;
+            text-indent: 1em;
+        }
+        h4 {
+            margin: 0;
+        }
+        fieldset {
+            background-color: #0001; /*shade body background by a small amount*/
+            margin-bottom: 10px;
+        }
+        legend {
+            border-radius: 50px 0 50px 0;
+            border: 2px solid white;
+            padding: 6px 25px;
+            font-weight: 500;
+            font-size: 120%;
+            background-color: #0005;
+        }
+        .fieldset-row {
+            display: flex;
+            align-items: stretch;
+        }
+        .fieldset-row label, .fieldset-row div {
+            flex-grow: 1;
+            margin: 4px 6px;
+            background-color: #0003;
+            padding: 2px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        fieldset label input, fieldset label textarea, fieldset label select {
+            width: calc(100% - 4px); /*adjust for padding, element will overflow parent otherwise*/
+            padding: 2px;
+            display: block;
+            border: none;
+            border-bottom: 1px solid #777;
+            background-color: #fff;
+            color: #000;
+        }
+        .req-ind {
+            color: red;
+            font-weight: bold;
+            text-shadow: 0 0 2px #700;
+            font-style: normal;
+        }
+        /*Reduce whitespace on small screens*/
+        @media (max-width:700px) {
+            fieldset label input, fieldset label textarea, fieldset label select {
+                padding: 1px;
+                width: calc(100% - 2px);
+            }
+            .fieldset-row label, .fieldset-row div {
+                margin: 2px 3px;
+                padding: 1px;
+                font-size: 90%;
+            }
+        }
+
+        input[type="submit"] {
+            width: 150px;
+            height: 75px;
+            /*https://stackoverflow.com/questions/19761202/css3-transform-skew-one-side*/
+            clip-path: polygon(
+                0 0,
+                150px 0,
+                87.5px 75px,
+                0 75px);
+            text-align: left;
+            font-size: 26px;
+            font-style: italic;
+            color: #fff;
+            background-color: #040;
+            border-radius: 10px;
+        }
+        input[type="reset"] {
+            width: 100px;
+            height: 50px;
+            clip-path: polygon(
+                41.25px 0,
+                100px 0,
+                100px 50px,
+                0px 50px
+            );
+            margin-left: -46px;
+            text-align: right;
+            font-size: 20px;
+            font-style: italic;
+            color: #faa;
+            background-color: #400;
+            border-radius: 10px;
+        }
+        /*https://stackoverflow.com/questions/31854185/how-to-add-border-in-my-clip-path-polygon-css-style*/
+        .fieldset-row-final-buttons {
+            filter:
+                drop-shadow(0 1px 0 #000)
+                drop-shadow(0 -1px 0 #000)
+                drop-shadow(1px 0 0 #000)
+                drop-shadow(-1px 0 0 #000)
+        }
+        div.fieldset-multibox-container { /*extra specification to override earlier styles*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+        }
+        .fieldset-multibox-container input {
+            display: inline-block;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- https://www.w3schools.com/tags/tag_label.asp : label can be bound to input by placing input inside label. lessens need to type many, *many* redundant name/ID attributes in this example -->
+    <h1>Online Job Application</h1>
+    <h2>- Job Name</h2>
+    <form action="job_apply.php" method="POST">
+        <fieldset>
+            <legend>Personal Information</legend>
+            <div class="fieldset-row">
+                <h4>Self ID</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><input name="pi-fname" type="text" required><span>First Name<i class="req-ind">*</i></span></label>
+                <label><input name="pi-mname" type="text">Middle Name</label>
+                <label><input name="pi-lname" type="text" required><span>Last Name<i class="req-ind">*</i></span></label>
+            </div>
+
+            <div class="fieldset-row">
+                <label><textarea rows=2 cols=20 name="pi-addr1"></textarea><span>Permanent Address<i class="req-ind">*</i></span></label>
+                <label><textarea rows=2 cols=20 name="pi-addr2"></textarea>Current Address</label>
+            </div>
+
+            <div class="fieldset-row">
+                <label><input name="pi-dob" type="date" required><span>Date of Birth<i class="req-ind">*</i></span></label>
+                <label>
+                    <div class="fieldset-multibox-container">
+                    <input type="radio" name="pi-gender" value="0" checked> Undisclosed
+                    <input type="radio" name="pi-gender" value="1"> Male
+                    <input type="radio" name="pi-gender" value="2"> Female
+                    <input type="radio" name="pi-gender" value="3"> Other
+                    </div>
+                    Gender
+                </label>
+            </div>
+
+            <div class="fieldset-row">
+                <h4>Contact</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><input name="pi-phone1num" type="tel" required><span>Phone Number<i class="req-ind">*</i></span></label>
+                <label><select name="pi-phone1type" required>
+                    <option value="" selected disabled>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    <span>Type<i class="req-ind">*</i></span>
+                </label>
+                <label><input name="pi-phone2num" type="tel">Alt. Phone Number</label>
+                <label><select name="pi-phone2type">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+            </div>
+            <div class="fieldset-row">
+                <label><input type="email" name="pi-email">Email</label>
+            </div>
+            <div class="fieldset-row">
+                <h4>Alternate Contacts</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><b>1.</b></label>
+                <label><input type="text" name="pi-altc1name">Name</label>
+                <label><input name="pi-altc1phone" type="tel">Phone Number</label>
+                <label><select name="pi-altc1phonetype">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+                <label><input type="email" name="pi-altc1email">Email</label>
+            </div>
+            <div class="fieldset-row">
+                <label><b>2.</b></label>
+                <label><input type="text" name="pi-altc2name">Name</label>
+                <label><input name="pi-altc2phone" type="tel">Phone Number</label>
+                <label><select name="pi-altc2phonetype">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+                <label><input type="email" name="pi-altc2email">Email</label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Qualifications</legend>
+            <div class="fieldset-row">
+                <h4>References</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><b>1.</b></label>
+                <label><input type="text" name="qi-ref1name">Name</label>
+                <label><input type="text" name="qi-ref1role">Role</label>
+                <label><input name="qi-ref1phone" type="tel">Phone #</label>
+                <label><select name="qi-ref1phonetype">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+                <label><input type="email" name="qi-ref1email">Email</label>
+            </div>
+            <div class="fieldset-row">
+                <label><b>2.</b></label>
+                <label><input type="text" name="qi-ref2name">Name</label>
+                <label><input type="text" name="qi-ref2role">Role</label>
+                <label><input name="qi-ref2phone" type="tel">Phone #</label>
+                <label><select name="qi-ref2phonetype">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+                <label><input type="email" name="qi-ref2email">Email</label>
+            </div>
+            <div class="fieldset-row">
+                <label><b>3.</b></label>
+                <label><input type="text" name="qi-ref3name">Name</label>
+                <label><input type="text" name="qi-ref3role">Role</label>
+                <label><input name="qi-ref3phone" type="tel">Phone #</label>
+                <label><select name="qi-ref3phonetype">
+                    <option value="" selected>Select an option...</option>
+                    <option value="mob">Mobile</option>
+                    <option value="home">Landline</option>
+                    <option value="voip">VOIP</option>
+                    <option value="other">Other</option>
+                    </select>
+                    Type
+                </label>
+                <label><input type="email" name="qi-ref3email">Email</label>
+            </div>
+            <div class="fieldset-row">
+                <h4>Education</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><b>1.</b></label>
+                <label><select name="qi-edu1type">
+                    <option value="" selected>Select an option...</option>
+                    <option value="hs">High School</option>
+                    <option value="ged">G.E.D.</option>
+                    <option value="assoc">Associate Degree</option>
+                    <option value="bac">Bachelor's Degree</option>
+                    <option value="mas">Master's Degree</option>
+                    <option value="other">Other</option>
+                    </select>Type</label>
+                <label><input type="text" name="qi-edu1source">Source</label>
+                <label><input name="qi-edu1date" type="date">Graduation Date</label>
+                <label><input type="number" name="qi-edu1credits">Credits/Grade</label>
+            </div>
+            <div class="fieldset-row">
+                <label><b>2.</b></label>
+                <label><select name="qi-edu2type">
+                    <option value="" selected>Select an option...</option>
+                    <option value="hs">High School</option>
+                    <option value="ged">G.E.D.</option>
+                    <option value="assoc">Associate Degree</option>
+                    <option value="bac">Bachelor's Degree</option>
+                    <option value="mas">Master's Degree</option>
+                    <option value="other">Other</option>
+                    </select>Type</label>
+                <label><input type="text" name="qi-edu2source">Source</label>
+                <label><input name="qi-edu2date" type="date">Graduation Date</label>
+                <label><input type="number" name="qi-edu2credits">Credits/Grade</label>
+            </div>
+            <div class="fieldset-row">
+                <h4>Experience</h4>
+            </div>
+            <div class="fieldset-row">
+                <label><b>1.</b></label>
+                <label><input type="text" name="qi-exp1name">Company</label>
+                <label><textarea name="qi-exp1role"></textarea>Role</label>
+                <label><input type="date" name="qi-exp1from">Date Hired</label>
+                <label><input type="date" name="qi-exp1to">Date Left</label>
+            </div>
+            <div class="fieldset-row">
+                <label><b>2.</b></label>
+                <label><input type="text" name="qi-exp2name">Company</label>
+                <label><textarea name="qi-exp2role"></textarea>Role</label>
+                <label><input type="date" name="qi-exp2from">Date Hired</label>
+                <label><input type="date" name="qi-exp2to">Date Left</label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Preferred Schedule &amp; Location</legend>
+
+            <div class="fieldset-row">
+                <label>
+                    <div class="fieldset-multibox-container">
+                    <input type="radio" name="si-type" value="0" required> Full-Time
+                    <input type="radio" name="si-type" value="1" required> Part-Time
+                    <input type="radio" name="si-type" value="2" required> Temp./<wbr>Contract
+                    <input type="radio" name="si-type" value="3" required> Other
+                    </div>
+                    Job Type
+                </label>
+                <label><input type="datetime" name="si-avail">Earliest Available</label>
+            </div>
+
+            <div class="fieldset-row">
+                <label>
+                    <div class="fieldset-multibox-container">
+                    <input type="radio" name="si-type" value="0" required> Loc 1
+                    <input type="radio" name="si-type" value="1" required> Loc 2
+                    <input type="radio" name="si-type" value="2" required> Loc 3
+                    </div>
+                    Preferred Location
+                </label>
+                <label>
+                    <div class="fieldset-multibox-container">
+                        <input type="checkbox" name="si-reloc" value="yes">
+                        Willing to Relocate
+                    </div>
+                </label>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div class="fieldset-row">
+                <label>
+                    <div class="fieldset-multibox-container">
+                        <input type="checkbox" name="final-confirm" value="yes" required>
+                        I hereby certify that all information entered in this form is complete and correct to the best of my knowledge.<i class="req-ind">*</i>
+                    </div>
+                </label>
+            </div>
+        </fieldset>
+        <div style="text-align: center;padding-bottom:16px;">
+            <div style="margin: auto;">
+                <i><i class="req-ind">*</i>Required Field</i><br>
+                <br>
+                <div class="fieldset-row-final-buttons"><input type="submit"><input type="reset"></div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

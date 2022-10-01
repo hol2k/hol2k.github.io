@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #screen-size-cat-1, #screen-size-cat-2, #screen-size-cat-3, #screen-size-cat-4 {
+            display: none;
+        }
+
+        img {
+            display: block;
+            margin: auto;
+            width: 80vw;
+        }
+
+        @media (max-width:500px) {
+            #screen-size-cat-1 {display: inline;}
+        }
+        
+        @media (min-width:501px) and (max-width:700px) {
+            #screen-size-cat-2 {display: inline;}
+        }
+
+        @media (min-width:701px) and (max-width:1200px) {
+            #screen-size-cat-3 {display: inline;}
+        }
+
+        @media (min-width:1201px) {
+            #screen-size-cat-4 {display: inline;}
+        }
+    </style>
+</head>
+<body>
+    <h2>Screen Size | <span id="screen-size-text"></span></h2>
+    <h2>Category | 
+        <span id="screen-size-cat-1">Phone</span>
+        <span id="screen-size-cat-2">Tablet</span>
+        <span id="screen-size-cat-3">Laptop</span>
+        <span id="screen-size-cat-4">Desktop</span>
+    </h2>
+    <img src="../Images/BHddbgH.png">
+    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit fuga facilis reprehenderit, animi laboriosam modi labore explicabo quia at nulla dignissimos possimus, iusto dolore error itaque hic. Harum quia error dignissimos libero cumque earum ducimus esse beatae, aut maiores, provident debitis, saepe ipsa aliquid impedit excepturi. Fugit labore quos iusto praesentium, cum nesciunt ipsa ea iure facere, nulla illo enim laudantium eveniet nam officia! Maiores ut amet voluptatum, saepe tempora ipsa cumque at repudiandae iusto repellendus quod maxime asperiores corporis, nobis porro commodi ab voluptas provident odio sunt corrupti. Fuga nihil molestias quia praesentium explicabo culpa voluptas numquam asperiores? Esse!</div>
+    <script>
+        function OnWindowResize() {
+            document.getElementById('screen-size-text').innerHTML = window.innerWidth + 'px';
+        }
+
+        window.onresize = OnWindowResize;
+
+        OnWindowResize();
+    </script>
+</body>
+</html>

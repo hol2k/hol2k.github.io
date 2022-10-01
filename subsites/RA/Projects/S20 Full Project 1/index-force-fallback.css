@@ -1,0 +1,24 @@
+section, footer {
+    margin-left: var(--aside-main-width);
+}
+
+aside {
+    display: block;
+    position: sticky;
+    opacity: 1;
+    top: 50px;
+    bottom: unset;
+    left: 0;
+    height: 100vh;
+    width: var(--aside-main-width);
+    border-radius: 0;
+    float: left;
+}
+
+#aside-hover-handle-display {
+    display: none;
+}
+
+aside:not(:hover) a {
+    display: block;
+}

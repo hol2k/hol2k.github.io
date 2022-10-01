@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Practice | Number Format Converter</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        input, textarea {
+            max-width: 80vw;
+            width: 80vw;
+            height: 5vh;
+            border: 4px outset black;
+            border-radius: 0.5em;
+            position: relative;
+        }
+        #io-numeric {
+            right: 5vw;
+        }
+        #io-verbal {
+            left: 5vw;
+        }
+        #status {
+            margin: 1em 0;
+        }
+        #main-article {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>JS Practice | Number Format Converter</h2>
+    </header>
+    <section>
+        <article id="main-article">
+            <h4>Numeric</h4>
+            <textarea id="io-numeric" onkeyup="updateVerbalFromNumeric()"></textarea>
+            <div id="status">&uarr;Awaiting input...&darr;</div>
+            <textarea id="io-verbal" onkeyup="updateNumericFromVerbal()"></textarea>
+            <h4>Verbal</h4>
+        </article>
+    </section>
+    <footer>
+
+    </footer>
+
+    <script>
+        const ioNumeric = document.getElementById('io-numeric');
+        const ioVerbal = document.getElementById('io-verbal');
+        const statusDisplay = document.getElementById('status');
+
+        const groupNames = [
+            'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion',
+            'decillion', 'undecillion', 'duodecillion', 'tredecillion', 'quattuordecillion', 'quindecillion', 'sexdecillion', 'septendecillion', 'octodecillion', 'novemdecillion',
+            'vigintillion', 'unvigintillion', 'duovigintillion', 'trevigintillion', 'quattuorvigintillion', 'quinvigintillion', 'sexvigintillion', 'septenvigintillion', 'octovigintillion', 'novemvigintillion',
+            'trigintillion'];
+        const onesNames = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+        const tensNames = ['zero', 'ten', 'twenty', 'thirty', 'fourty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        const specialNames = {
+            11: 'eleven',
+            12: 'twelve',
+            13: 'thirteen',
+            14: 'fourteen',
+            15: 'fifteen',
+            16: 'sixteen',
+            17: 'seventeen',
+            18: 'eighteen',
+            19: 'nineteen'
+        }
+
+        //Converts a number 0 <= n < 1000 to its English verbal equivalent
+        function numGroupToVerbal(ng) {
+            if(isNaN(ng) || ng > 999 || ng < 0 || ng % 1 !== 0) throw new RangeError('Only supports non-decimal numbers between 0 and 999, inclusive');
+            let hundreds = Math.floor(ng/100);
+            let onesAndTens = ng % 100;
+
+            let hundredsPrefix = '';
+            if(hundreds > 0) {
+                hundredsPrefix = onesNames[hundreds] + ' hundred';
+                if(onesAndTens > 0)
+                    hundredsPrefix += ' and ';
+            }
+
+            if(specialNames.hasOwnProperty(onesAndTens)) {
+                return hundredsPrefix + specialNames[onesAndTens];
+            }
+            
+            if(onesAndTens == 0) {
+                if(hundreds == 0) return 'zero';
+                return hundredsPrefix;
+            }
+
+            let tens = Math.floor(onesAndTens/10);
+            let ones = ng % 10;
+
+            if(ones == 0) {
+                return `${hundredsPrefix}${tensNames[tens]}`;
+            }
+            
+            if(tens == 0) {
+                return `${hundredsPrefix}${onesNames[ones]}`;
+            }
+
+            return `${hundredsPrefix}${tensNames[tens]}-${onesNames[ones]}`;
+        }
+
+        //Converts a single English verbal number group, e.g. "five hundred and twenty-one million", to its numeric equivalent and group position (returns an object with 'value' and 'position' properties); will trim and ignore 'and's
+        function verbGroupToNumeric(vg) {
+            let words = vg.replaceAll('and', '').split(' ').filter(v => v.length > 0).map(v => v.toLowerCase());
+            let retValue = 0;
+            if(words.length > 1 && words[1] == 'hundred') {
+                let hundredsWord = words.shift();
+                words.shift();
+                let hundredsIndex = onesNames.indexOf(hundredsWord);
+                if(hundredsIndex < 0) {
+                    throw new Error(`Detected word '${hundredsWord}' in hundreds place, but this is not a valid English word name for this place`);
+                }
+                retValue += hundredsIndex * 100;
+            }
+            if(words.length > 0) {
+                let tensAndOrOnesWord = words.shift();
+                let foundSpecial = false;
+                for(const swk of Object.keys(specialNames)) {
+                    let swv = specialNames[swk];
+                    if(tensAndOrOnesWord == swk) {
+                        foundSpecial = true;
+                        retValue += Number(swk);
+                        break;
+                    }
+                }
+                if(!foundSpecial) {
+                    let parts = tensAndOrOnesWord.split('-');
+                    if(parts.length > 2) {
+                        throw new Error(`Detected word '${tensAndOrOnesWord}' in tens/ones place, but it has too many dash-separated parts (expected 1 or 2)`);
+                    }
+                    if(parts.length > 1) {
+                        let tensIndex = tensNames.indexOf(parts[0]);
+                        if(tensIndex < 0) {
+                            throw new Error(`Detected word '${parts[0]}' in tens place, but this is not a valid English word name for this place`);
+                        }
+                        retValue += tensIndex * 10;
+                        let onesIndex = onesNames.indexOf(parts[1]);
+                        if(onesIndex < 0) {
+                            throw new Error(`Detected word '${parts[1]}' in ones place, but this is not a valid English word name for this place`);
+                        }
+                        retValue += onesIndex;
+                    } else {
+                        let onesIndex = onesNames.indexOf(parts[0]);
+                        let tensIndex = tensNames.indexOf(parts[0]);
+                        if(onesIndex < 0) {
+                            if(tensIndex < 0) {
+                                if(onesIndex < 0) {
+                                    throw new Error(`Detected word '${parts[1]}' in ones or tens place, but this is not a valid English word name for either place`);
+                                }
+                            } else {
+                                retValue += tensIndex * 10;
+                            }
+                        } else {
+                            if(tensIndex > 0) { //do not check zero, this is known ambiguous and will not affect calculation as 1*0 = 10*0
+                                throw new Error(`Detected word '${parts[1]}' in ones or tens place, which is ambiguous between the lists of valid names for both places (this is a bug! Please report to the developer of this program)`);
+                            }
+                            retValue += onesIndex;
+                        }
+                    }
+                }
+            }
+            let retGroup = 0;
+            if(words.length > 0) {
+                let groupWord = words.shift();
+                let groupIndex = groupNames.indexOf(groupWord);
+                if(groupIndex < 0) {
+                    throw new Error(`Detected word '${groupWord}' in group place, but this is not a valid English word name for this place`);
+                }
+                retGroup = groupIndex;
+            }
+            if(words.length > 0) {
+                throw new Error(`Encountered ${words.length} remaining words after parse: '${words.join(' ')}'`);
+            }
+            return {value: retValue, group: retGroup};
+        }
+
+        function updateVerbalFromNumeric() {
+            //Setup; retrieve value and check for easy errors
+            let val = ioNumeric.value;
+            let convertedGroups = [];
+            let gn = -1;
+
+            if(isNaN(val)) {
+                statusDisplay.innerHTML = '&#x1F6AB;Provided upper input is not a number!&#x1F6AB;';
+                return;
+            }
+
+            //Split off decimal part, if present
+            let dec = '';
+            let decIndex = val.indexOf('.');
+            if(decIndex != -1) {
+                dec = val.substring(decIndex+1);
+                val = val.substring(0, decIndex);
+            }
+            
+            //Calculate number of groups of 3 digits (eff. ceil(X log 1000))
+            let overallGroupCount = Math.ceil(val.length / 3);
+            if(overallGroupCount > groupNames.length + 1) {
+                statusDisplay.innerHTML = '&#x1F6AB;Number is too big!&#x1F6AB;';
+                return;
+            }
+
+            //Strip off and remember negative symbol, if present
+            let wasNegative = false;
+            if(val[0] == '-') {
+                wasNegative = true;
+                val = val.substring(1);
+            }
+
+            //Split string into groups and convert each group
+            while(val.length > 0) {
+                let group = Number(val.slice(-3));
+                val = val.slice(0, -3);
+                let groupText = numGroupToVerbal(group);
+                if(gn >= 0) groupText += ' ' + groupNames[gn];
+                gn++;
+                if(group == 0) continue;
+                convertedGroups.unshift(groupText);
+            }
+
+            //Join groups into return value string
+            let newText = convertedGroups.join(', ');
+
+            //Handle special cases and stripped decimal/negative
+            if(newText.length == 0)
+                newText = 'zero';
+
+            if(wasNegative) newText = 'negative ' + newText;
+
+            if(dec !== '') {
+                newText += ' point ' + [...dec].map(n => onesNames[n]).join(' ');
+            }
+
+            //Final formatting and display
+            newText[0] = newText[0].toUpperCase();
+
+            ioVerbal.innerText = newText;
+
+            statusDisplay.innerHTML = '<div id="status">&darr;Converted!&darr;</div>';
+        }
+
+        function updateNumericFromVerbal() {
+            //Setup; retrieve value and check for easy errors/formatting differences
+            //Strip negative, then split by ' point ', then commas, then spaces; remove empties and convert to lowercase
+            let val = ioVerbal.value;
+
+            let isNegative = val.startsWith('negative ');
+            if(isNegative) val = val.substring(9);
+
+            let snK = Object.keys(specialNames);
+            let snV = Object.values(specialNames);
+
+            val = val.split(' point '); //Array dim1: split into fractional/decimal
+            val = val.map(
+                v => v.split(',').map( //Array dim2: split by commas
+                    v2 => v2.split(' ').map( //Array dim3: split by words
+                        v3 => v3.trim().toLowerCase() //Trim and lowercase individual words
+                        ).filter(v3 => v3.length > 0) //Remove empty words
+                        //Find all indices at once
+                        .map(v3 => {
+                            let groupIndex = groupNames.indexOf(v3);
+                            let onesIndex = onesNames.indexOf(v3);
+                            let tensIndex = tensNames.indexOf(v3);
+                            let specialIndex = snK.indexOf(v3);
+                            return {value: v3, groupIndex: groupIndex, onesIndex: onesIndex, tensIndex: tensIndex, specialIndex: specialIndex};
+                        })
+                        //Filter out unknown words
+                        .filter(v3 => v3.onesIndex >= 0 || v3.tensIndex >= 0 || v3.groupIndex >= 0 || v3.specialIndex >= 0)
+                    //Remove empty spaces of remaining array dimensions
+                    ).filter(v2 => v2.length > 0)
+                ).filter(v1 => v1.length > 0);
+            
+            //Check for no words
+            if(val.length == 0) {
+                statusDisplay.innerHTML = '&#x1F6AB;No number words found!&#x1F6AB;';
+                return;
+            }
+
+            ////Integer part:
+            //
+
+            //NYI
+
+            ////Decimal part (if present):
+
+            //statusDisplay.innerHTML = '<div id="status">&uarr;Converted!&uarr;</div>';
+            statusDisplay.innerHTML = '&#x1F6AB;Conversion from verbal to numeric is NYI!&#x1F6AB;';
+        }
+    </script>
+</body>
+</html>
