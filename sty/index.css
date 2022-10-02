@@ -144,7 +144,7 @@ a.grid-item-title:hover::before {
 	right: 0;
 	width: 2rem;
 	height: 2rem;
-	opacity: 0.5;
+	opacity: 0.75;
 	content: '';
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -164,15 +164,25 @@ a.grid-item-title:hover::before {
 	text-align:right;
 	vertical-align:middle;
 	right:2.5em;
-	filter:opacity(65%);
+	filter:opacity(75%);
 }
 	
 .grid-item-toggle .grid-item-body::before {
 	background-image: url('/static/maximize.png');
+	background-color: #0007;
+	border-radius: 4px 0 0 0;
+	border-color: #0000;
+	border-style: solid;
+	border-width: 2px;
 }
 
 .grid-item-toggle .grid-item-body-alt::before {
 	background-image: url('/static/minimize.png');
+	background-color: #0007;
+	border-radius: 4px 0 0 0;
+	border-color: #0000;
+	border-style: solid;
+	border-width: 2px;
 }
 
 .grid-item-toggle .grid-item-body:hover::before, .grid-item-toggle .grid-item-body-alt:hover::before {
