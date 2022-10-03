@@ -190,12 +190,13 @@ a.grid-item-title:hover::before {
 	overflow-x: scroll;
 	overflow-y: hidden;
 	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
 	white-space: nowrap;
 }
 
 .image-gallery img {
 	display: inline-block;
-	scroll-snap-align: start;
+	scroll-snap-align: center;
 	width: auto;
 	height: 100%;
 }
