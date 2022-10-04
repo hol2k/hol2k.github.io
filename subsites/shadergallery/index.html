@@ -1,21 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8">
+    	<meta charset="UTF-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>hol2k.github.io: a web portfolio -- 3D model gallery</title>
 		
 		<script src="/lib/jquery/jquery-3.6.0.min.js" type="text/javascript"></script>
-		<script src="/index.js" type="text/javascript"></script>
+		<script src="/gallery-grid.js" type="text/javascript"></script>
 		<script src="/header.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="/sty/doc-style.css">
 		<link rel="stylesheet" href="/sty/index.css">
+		<link rel="stylesheet" href="/sty/gallery-grid.css">
+
+		<noscript>
+			<style>
+				.grid-item-toggle .grid-item-body-alt, .grid-item-toggle .grid-item-body {
+					user-select: unset !important;
+					color: black !important;
+					opacity: unset !important;
+					pointer-events: unset !important;
+				}
+
+				.grid-item-toggle .grid-item-body {
+					height: auto;
+					bottom: 6em;
+				}
+
+				.grid-item-toggle .grid-item-body-alt {
+					top: 6em;
+				}
+
+				.grid-item-toggle {
+					grid-column: 1 / -1;
+					height: 80vh;
+				}
+			</style>
+		</noscript>
 	</head>
 	<body>
-		<div id="page-header"></div>
-		<div class="gallery-wrap">
-			<div class="gallery-item" data-thumbnail-href="">
-				<div class="gallery-item-title">Bronze</div>
-				<div class="gallery-item-images"></div>
-				<div class="gallery-item-links"></div>
+		<header class="title-wrap">
+            <div id="page-header"></div>
+			<div class="title-bar">
+				<div class="title-text">3D Modeling Gallery</div>
 			</div>
-		</div>
+        </header>
+
+		<noscript style="color:#900;font-size:16px;text-align:center;padding:16px;width:auto;display:inline-block;">Your browser does not support JavaScript, or has it disabled via settings or an extension. Full-page preview toggle buttons <img src="/static/maximize.png" style="height:16px;width:16px;background-color:#2227;padding:2px;border-radius:2px;vertical-align:middle;"></img> are dependent on JavaScript and will not function without it. As a fallback, every gallery will be automatically visible and expanded to page width.</noscript>
+
+		<section class="grid-wrap">
+			
+			<article class="grid-item" data-width-basis="2" data-height-basis="1" style="grid-column:auto / span 2"><div class="grid-inner">
+				<div class="grid-item-title h2">Gallery Controls</div>
+				<div class="grid-item-body text">
+				<p>Each gallery tile displays a description of a category of images. Click anywhere on a tile that has a full-page preview toggle button <img src="/static/maximize.png" style="height:16px;width:16px;background-color:#2227;padding:2px;border-radius:2px;vertical-align:middle;"></img> to open the image gallery for that category.</p>
+				<p>Within an image gallery, use the snapping horizontal scrollbar at the bottom to switch images. Click anywhere else to close the gallery (indicated by <img src="/static/minimize.png" style="height:16px;width:16px;background-color:#2227;padding:2px;border-radius:2px;vertical-align:middle;"></img>).</p>
+				</div>
+			</div></article>
+
+            <div class="grid-header h1"><div class="grid-inner">Standalone Shaders</div></div>
+			<article class="grid-item grid-item-toggle" data-width-basis="1" data-height-basis="1" data-width-alt="2" data-height-alt="2"><div class="grid-inner">
+				<span class="grid-item-title h2">Ancient Bronze</span>
+				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
+					<p>A metallic shader featuring procedural scratches and lumpiness.</p>
+					<div class="fill-bg" style="background-image: url('/static/shadergallery/preview.png'); opacity: 0.2"></div>
+				</div>
+				<div class="grid-item-body-alt text fill-bg" title="Click to collapse preview">
+					<div class="image-gallery">
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/bronze1.png"></img>
+							<figcaption class="text text-outline-white">Shader as rendered on Suzanne model, transparent background.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/bronze1.png"></img>
+							<caption></caption>
+						</figure>
+					</div>
+				</div>
+			</div></article>
+
+            <div class="grid-header h1"><div class="grid-inner">Game Development</div></div>
+
+			<article class="grid-item grid-item-toggle"><div class="grid-inner">
+				<a class="grid-item-title h2" href="https://github.com/ThinkInvis/RoR2-TinkersSatchel">Tinker's Satchel <span class="text-sub">(Risk of Rain 2)</span></a>
+				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
+					Tinker's Satchel is a mod (third-party modification) for the video game <i>Risk of Rain 2</i>. It adds significant amounts of original content to various areas of the game, including over 40 new items (base game has 186) with custom models. This section of the gallery features said models.
+				</div>
+				<div class="grid-item-body-alt text fill-bg" title="Click to collapse preview">
+					<div class="image-gallery">
+						<img src="/static/shadergallery/bronze1.png"></img>
+						<img src="/static/shadergallery/bronze1.png"></img>
+					</div>
+				</div>
+			</div></article>
+
+            <div class="grid-header h1"><div class="grid-inner">TTRPG Characters</div></div>
+
+        </section>
 	</body>
 </html>
