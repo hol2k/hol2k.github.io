@@ -186,7 +186,7 @@ a.grid-item-title:hover::before {
 .image-gallery {
 	width: 100%;
 	height: 100%;
-	background: repeating-conic-gradient(#888 0% 25%, #aaa 25% 50%) 50% / 100px 100px;
+	background: repeating-conic-gradient(#444 0% 25%, #505050 25% 50%) 50% / 50px 50px fixed;
 	overflow-x: scroll;
 	overflow-y: hidden;
 	scroll-snap-type: x mandatory;
@@ -213,6 +213,7 @@ a.grid-item-title:hover::before {
 }
 
 .image-gallery-item img {
+	background: repeating-conic-gradient(#888 0% 25%, #999 25% 50%) 50% / 50px 50px fixed;
 	position: absolute;
 	top: 0;
 	left: 0;
