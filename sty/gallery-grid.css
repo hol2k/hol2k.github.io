@@ -85,6 +85,15 @@ a.grid-item-title:hover::before {
 	text-align: left;
 	text-indent: 2rem;
 	overflow: hidden;
+	background-position: center;
+}
+
+.grid-item-body {
+	background-size: cover;
+}
+.grid-item-body-alt {
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 .grid-item-body p:first-of-type, .grid-item-body-alt p:first-of-type {

@@ -59,6 +59,31 @@
 			</div></article>
 
             <div class="grid-header h1"><div class="grid-inner">Standalone Shaders</div></div>
+
+			<article class="grid-item grid-item-toggle" data-width-basis="1" data-height-basis="1" data-width-alt="2" data-height-alt="2"><div class="grid-inner">
+				<span class="grid-item-title h2">Blended Noise Patches</span>
+				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
+					<p>A reusable shader node group that generates random, noisy patches of two different colors, with a highly configurable gradient boundary between them.</p>
+					<div class="fill-bg" style="background-image: url('/static/shadergallery/patchespreview.png'); opacity: 0.2"></div>
+				</div>
+				<div class="grid-item-body-alt text fill-bg" title="Click to collapse preview">
+					<div class="image-gallery">
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/patches1.png"></img>
+							<figcaption class="text text-outline-black">A demonstration of the node group's parameters, as compared to a baseline on the top left.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/patchesr1.png"></img>
+							<figcaption class="text text-outline-black">Repeat application of the node group can lead to more complicated patterns. E.g. as shown: a quick approximation of metal rust overtaking bicolor swirls of paint.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/patchesnodes.png"></img>
+							<figcaption class="text text-outline-black">The nodes used in the group. InverseLerp is equivalent to the mathematical formula <code>x&equals;(y-a)&div;(b-a)</code>.</figcaption>
+						</figure>
+					</div>
+				</div>
+			</div></article>
+
 			<article class="grid-item grid-item-toggle" data-width-basis="1" data-height-basis="1" data-width-alt="2" data-height-alt="2"><div class="grid-inner">
 				<span class="grid-item-title h2">Ancient Bronze</span>
 				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
@@ -69,11 +94,27 @@
 					<div class="image-gallery">
 						<figure class="image-gallery-item">
 							<img src="/static/shadergallery/bronze1.png"></img>
-							<figcaption class="text text-outline-white">Shader as rendered on Suzanne model, transparent background.</figcaption>
+							<figcaption class="text text-outline-black">Shader as rendered on Blender's Suzanne model.</figcaption>
+						</figure>
+					</div>
+				</div>
+			</div></article>
+
+			<article class="grid-item grid-item-toggle" data-width-basis="1" data-height-basis="1" data-width-alt="2" data-height-alt="2"><div class="grid-inner">
+				<span class="grid-item-title h2">Bark</span>
+				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
+					<p>A shader mimicking tree bark, based on study of an image of such.</p>
+					<div class="fill-bg" style="background-image: url('/static/shadergallery/barkpreview.png'); opacity: 0.2"></div>
+				</div>
+				<div class="grid-item-body-alt text fill-bg" title="Click to collapse preview">
+					<div class="image-gallery">
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/bark1.png"></img>
+							<figcaption class="text text-outline-black">Shader as rendered on Blender's Suzanne model.</figcaption>
 						</figure>
 						<figure class="image-gallery-item">
-							<img src="/static/shadergallery/bronze1.png"></img>
-							<caption></caption>
+							<img src="/static/shadergallery/bark2.png"></img>
+							<figcaption class="text text-outline-black">Shader as used in a more complicated scene.</figcaption>
 						</figure>
 					</div>
 				</div>
@@ -84,18 +125,59 @@
 			<article class="grid-item grid-item-toggle"><div class="grid-inner">
 				<a class="grid-item-title h2" href="https://github.com/ThinkInvis/RoR2-TinkersSatchel">Tinker's Satchel <span class="text-sub">(Risk of Rain 2)</span></a>
 				<div class="grid-item-body text text-outline-white" title="Click to expand preview">
-					Tinker's Satchel is a mod (third-party modification) for the video game <i>Risk of Rain 2</i>. It adds significant amounts of original content to various areas of the game, including over 40 new items (base game has 186) with custom models. This section of the gallery features said models.
+					Tinker's Satchel is a mod (third-party modification) for the video game <i>Risk of Rain 2</i>. It adds significant amounts of original content to various areas of the game, including over 40 new items (base game has 186) with custom models. This section of the gallery features a selection of said models.
+					<div class="fill-bg" style="background-image: url('/static/shadergallery/tksat/defib.png'); opacity: 0.2"></div>
 				</div>
 				<div class="grid-item-body-alt text fill-bg" title="Click to collapse preview">
 					<div class="image-gallery">
-						<img src="/static/shadergallery/bronze1.png"></img>
-						<img src="/static/shadergallery/bronze1.png"></img>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/bismuth.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:#88ccff">Bismuth Flask (Lunar)</span>: adaptive resistance to one tier of enemy, at the cost of vulnerability to the others.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/camera.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:orange">Causal Camera (Equipment)</span>: rewinds the player's health, position, and cooldowns by up to 10 seconds, providing brief invulnerability.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/defib.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:greenyellow">Defibrillator (Uncommon/T2)</span>: allows critical hit chance to affect healing caused by the player (as opposed to healing received from other players).</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/emp.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:#88ccff">EMP Device (Lunar Equipment)</span>: destroys enemy projectiles and temporarily disables enemy and player skills (except primary skill on players).</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/gofaster.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:red">Go-Faster Stripes (Rare/T3)</span>: upgrades the player's Utility skill with an increase in mobility.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/hydroponic.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:#88ccff">Hydroponic Cell (Lunar)</span>: absorbs some of the player's healing and converts it into a damage buff on their next high-damage attack.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/motiontracker.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:#ddd">Old-War Lidar (Common/T1)</span>: gradually increases damage against enemies the longer they stay in combat with the player.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/pinball.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:red">Pinball Wizard (Rare/T3)</span>: gives the player's projectiles a chance to perform homing bounces.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/rings.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:greenyellow">Negative Feedback Loop (Uncommon/T2)</span> and <span style="color:#cc77cc">Bramble Ring (Void T2)</span>: delays some of the player's damage taken over time. Void variant reflects damage to sender instead.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/shrinkray.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:red">Shrink Ray (Rare/T3)</span>: weakens enemies on hit, including disabling all but one of their attacks.</figcaption>
+						</figure>
+						<figure class="image-gallery-item">
+							<img src="/static/shadergallery/tksat/terminal.png"></img>
+							<figcaption class="text text-outline-black"><span style="color:orange">Command Terminal (Equipment)</span>: revives another player, or summons a drone if the player has no dead allies. Consumed on use, unlike most Equipment.</figcaption>
+						</figure>
 					</div>
 				</div>
 			</div></article>
-
-            <div class="grid-header h1"><div class="grid-inner">TTRPG Characters</div></div>
-
+			
         </section>
 	</body>
 </html>
