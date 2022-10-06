@@ -110,9 +110,6 @@ a.grid-item-title:hover::before {
 .grid-item-toggle .grid-item-body::before,
 .grid-item-toggle .grid-item-body-alt::before {
 	display: block;
-	position: absolute;
-	bottom: 0;
-	right: 0;
 	width: 2rem;
 	height: 2rem;
 	opacity: 0.75;
@@ -120,6 +117,11 @@ a.grid-item-title:hover::before {
 	background-repeat: no-repeat;
 	background-size: contain;
 	transition: opacity 0.2s;
+	border-radius: 0 0 0 4px;
+	background-color: #0007;
+	border-color: #0000;
+	border-style: solid;
+	border-width: 2px;
 }
 
 .grid-item-toggle-caption {
@@ -140,20 +142,17 @@ a.grid-item-title:hover::before {
 	
 .grid-item-toggle .grid-item-body::before {
 	background-image: url('/static/maximize.png');
-	background-color: #0007;
-	border-radius: 4px 0 0 0;
-	border-color: #0000;
-	border-style: solid;
-	border-width: 2px;
+	position: relative;
+	float: right;
+	margin-top: -4px;
+	margin-right: -4px;
 }
 
 .grid-item-toggle .grid-item-body-alt::before {
 	background-image: url('/static/minimize.png');
-	background-color: #0007;
-	border-radius: 4px 0 0 0;
-	border-color: #0000;
-	border-style: solid;
-	border-width: 2px;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 .grid-item-toggle .grid-item-body:hover::before, .grid-item-toggle .grid-item-body-alt:hover::before {
